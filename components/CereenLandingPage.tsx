@@ -126,6 +126,12 @@ export const CereenLandingPage: React.FC = () => {
           <a href="#talk-to-us" className="text-[#4C3322] border-b border-[#4C3322] pb-0.5 hover:text-[#8BAB70] hover:border-[#8BAB70] transition-all">
             Talk to us
           </a>
+          <span 
+            onClick={() => navigate('/circle')}
+            className="hover:text-[#8BAB70] transition-colors flex items-center gap-1 cursor-pointer select-none"
+          >
+            Sanctuary Circle <sup className="text-[9px] text-[#8BAB70] font-bold uppercase ml-0.5">Live</sup>
+          </span>
         </nav>
 
         {/* Login / Register Buttons */}

@@ -395,6 +395,14 @@ export const CereenDashboardPage: React.FC = () => {
             <i className="fas fa-sliders-h text-xs"></i>
             <span className="whitespace-nowrap">Profile & Settings</span>
           </button>
+
+          <button 
+            onClick={() => navigate('/circle')}
+            className="w-full text-left px-4 py-3 rounded-full flex items-center gap-3 text-sm font-semibold transition-all duration-300 hover:bg-[#8BAB70]/15 hover:text-[#8BAB70] text-[#4C3322]"
+          >
+            <i className="fas fa-users text-xs"></i>
+            <span className="whitespace-nowrap font-bold">Sanctuary Circle</span>
+          </button>
         </nav>
 
         {/* WORKSPACE AREA */}
