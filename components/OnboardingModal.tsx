@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { User, Interest } from '../types';
+import { User } from '../types';
 import { mockInterests, mockUsers, COUNTRIES, CITIES_BY_COUNTRY, LANGUAGES, RELIGIONS, POLITICAL_VIEWS, PHILOSOPHIES } from '../constants';
 
 interface OnboardingModalProps {
@@ -50,29 +49,31 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-dark-mode-card-bg rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#4C3322]/50 backdrop-blur-md p-4 select-none">
+      <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] font-outfit text-[#4C3322] animate-fade-in-up">
         
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 dark:bg-gray-700 h-2">
-          <div className="bg-primary-teal h-2 transition-all duration-300" style={{ width: `${(step / 5) * 100}%` }}></div>
+        <div className="w-full bg-[#4C3322]/10 h-1.5">
+          <div className="bg-[#8BAB70] h-1.5 transition-all duration-300" style={{ width: `${(step / 5) * 100}%` }}></div>
         </div>
 
-        <div className="p-8 overflow-y-auto">
+        <div className="p-8 overflow-y-auto custom-scrollbar flex-grow">
           {/* Step 1: Welcome & Location */}
           {step === 1 && (
-            <div className="space-y-6 text-center">
+            <div className="space-y-6 text-center animate-fade-in">
               <div className="mb-4">
-                <i className="fas fa-hand-sparkles text-5xl text-primary-teal"></i>
+                <div className="w-16 h-16 bg-[#8BAB70]/10 rounded-full flex items-center justify-center mx-auto text-[#8BAB70] text-2xl">
+                  <i className="fas fa-hand-sparkles"></i>
+                </div>
               </div>
-              <h2 className="text-2xl font-heading font-bold text-dark-text dark:text-dark-mode-text">Welcome to Welldone!</h2>
-              <p className="text-text-base dark:text-dark-mode-text-base">Let's get to know where you are from.</p>
+              <h2 className="text-3xl font-serif font-black">Welcome to Cereen</h2>
+              <p className="text-xs text-[#4C3322]/65 font-light leading-relaxed">Let's initialize your localized settings to match with sanctuary events and buddies.</p>
               
               <div className="space-y-4 text-left mt-6">
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-dark-text dark:text-dark-mode-text">Country</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2">Country</label>
                   <select 
-                    className="w-full p-3 rounded-lg border dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-sm cursor-pointer transition-all"
                     value={locationData.country}
                     onChange={(e) => setLocationData({...locationData, country: e.target.value, city: ''})}
                   >
@@ -81,9 +82,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-dark-text dark:text-dark-mode-text">City</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2">City</label>
                   <select 
-                    className="w-full p-3 rounded-lg border dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-sm cursor-pointer transition-all disabled:opacity-50"
                     value={locationData.city}
                     onChange={(e) => setLocationData({...locationData, city: e.target.value})}
                     disabled={!locationData.country}
@@ -94,9 +95,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-dark-text dark:text-dark-mode-text">Primary Language</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2">Primary Language</label>
                   <select 
-                    className="w-full p-3 rounded-lg border dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-sm cursor-pointer transition-all"
                     value={locationData.language}
                     onChange={(e) => setLocationData({...locationData, language: e.target.value})}
                   >
@@ -110,15 +111,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
 
           {/* Step 2: Identity & Views */}
           {step === 2 && (
-            <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-heading font-bold text-dark-text dark:text-dark-mode-text">Your Identity</h2>
-              <p className="text-text-base dark:text-dark-mode-text-base">Help us find your tribe.</p>
+            <div className="space-y-6 text-center animate-fade-in">
+              <h2 className="text-3xl font-serif font-black">Your Identity</h2>
+              <p className="text-xs text-[#4C3322]/65 font-light leading-relaxed">Customize belief outlines to help align your cosmic match criteria.</p>
               
               <div className="space-y-4 text-left mt-6">
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-dark-text dark:text-dark-mode-text">Religion / Spirituality</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2">Religion / Spirituality</label>
                   <select 
-                    className="w-full p-3 rounded-lg border dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-sm cursor-pointer"
                     value={locationData.religion}
                     onChange={(e) => setLocationData({...locationData, religion: e.target.value})}
                   >
@@ -127,9 +128,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-dark-text dark:text-dark-mode-text">Political View</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2">Political Outlook</label>
                   <select 
-                    className="w-full p-3 rounded-lg border dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-sm cursor-pointer"
                     value={locationData.politicalView}
                     onChange={(e) => setLocationData({...locationData, politicalView: e.target.value})}
                   >
@@ -138,9 +139,9 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold mb-1 text-dark-text dark:text-dark-mode-text">Philosophical Outlook</label>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider mb-2">Philosophical outlook</label>
                   <select 
-                    className="w-full p-3 rounded-lg border dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white"
+                    className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-sm cursor-pointer"
                     value={locationData.philosophy}
                     onChange={(e) => setLocationData({...locationData, philosophy: e.target.value})}
                   >
@@ -154,84 +155,90 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
 
           {/* Step 3: Interests */}
           {step === 3 && (
-            <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-heading font-bold text-dark-text dark:text-dark-mode-text">What moves you?</h2>
-              <p className="text-text-base dark:text-dark-mode-text-base">Select topics you are interested in.</p>
+            <div className="space-y-6 text-center animate-fade-in">
+              <h2 className="text-3xl font-serif font-black">What moves you?</h2>
+              <p className="text-xs text-[#4C3322]/65 font-light leading-relaxed">Select wellness interests to feature on your companion card.</p>
               
-              <div className="flex flex-wrap gap-2 justify-center mt-4">
-                {mockInterests.map(interest => (
-                  <button
-                    key={interest.id}
-                    onClick={() => toggleInterest(interest.name)}
-                    className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                      selectedInterests.includes(interest.name)
-                        ? 'bg-primary-teal text-white shadow-md'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200'
-                    }`}
-                  >
-                    {interest.name}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-2 justify-center mt-6">
+                {mockInterests.map(interest => {
+                  const isSelected = selectedInterests.includes(interest.name);
+                  return (
+                    <button
+                      key={interest.id}
+                      onClick={() => toggleInterest(interest.name)}
+                      className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#4C3322] text-[#FAF7F2] shadow-sm'
+                          : 'bg-[#FAF7F2] border border-[#4C3322]/10 text-[#4C3322]/70 hover:bg-[#4C3322]/5'
+                      }`}
+                    >
+                      {interest.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
           {/* Step 4: Add Friends */}
           {step === 4 && (
-            <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-heading font-bold text-dark-text dark:text-dark-mode-text">Build your Circle</h2>
-              <p className="text-text-base dark:text-dark-mode-text-base">Here are some people you might want to connect with.</p>
+            <div className="space-y-6 text-center animate-fade-in">
+              <h2 className="text-3xl font-serif font-black">Build your Circle</h2>
+              <p className="text-xs text-[#4C3322]/65 font-light leading-relaxed">Link up with suggested companions aligned to your wellness paths.</p>
               
-              <div className="space-y-3 mt-4 text-left max-h-60 overflow-y-auto pr-2">
-                {mockUsers.filter(u => u.id !== user.id).map(u => (
-                  <div key={u.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-dark-mode-input-bg rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <img src={u.avatar} alt={u.name} className="w-10 h-10 rounded-full object-cover" />
-                      <div>
-                        <p className="font-bold text-sm text-dark-text dark:text-dark-mode-text">{u.name}</p>
-                        <p className="text-xs text-gray-500">{u.occupation || 'Member'}</p>
+              <div className="space-y-3 mt-6 text-left max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                {mockUsers.filter(u => u.id !== user.id).map(u => {
+                  const isFriend = friendsToAdd.includes(u.id);
+                  return (
+                    <div key={u.id} className="flex items-center justify-between p-3.5 bg-[#FAF7F2]/50 border border-[#4C3322]/5 rounded-2xl shadow-sm">
+                      <div className="flex items-center space-x-3.5">
+                        <img src={u.avatar} alt={u.name} className="w-10 h-10 rounded-full object-cover border border-[#4C3322]/10" />
+                        <div>
+                          <p className="font-bold text-sm text-[#4C3322]">{u.name}</p>
+                          <p className="text-[10px] text-[#4C3322]/50 font-light mt-0.5">{u.occupation || 'Sanctuary Member'}</p>
+                        </div>
                       </div>
+                      <button
+                        onClick={() => toggleFriend(u.id)}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                          isFriend ? 'bg-[#8BAB70] text-[#FAF7F2]' : 'bg-[#4C3322]/5 text-[#4C3322]/60 hover:bg-[#4C3322]/10'
+                        }`}
+                      >
+                        <i className={`fas ${isFriend ? 'fa-check' : 'fa-plus'}`}></i>
+                      </button>
                     </div>
-                    <button
-                      onClick={() => toggleFriend(u.id)}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                        friendsToAdd.includes(u.id) ? 'bg-primary-teal text-white' : 'bg-gray-200 dark:bg-gray-600 text-gray-500'
-                      }`}
-                    >
-                      <i className={`fas ${friendsToAdd.includes(u.id) ? 'fa-check' : 'fa-plus'}`}></i>
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
 
           {/* Step 5: Tour & Complete */}
           {step === 5 && (
-            <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-heading font-bold text-dark-text dark:text-dark-mode-text">You're All Set!</h2>
-              <p className="text-text-base dark:text-dark-mode-text-base">Here's a quick look at what you can do:</p>
+            <div className="space-y-6 text-center animate-fade-in">
+              <h2 className="text-3xl font-serif font-black">You're All Set!</h2>
+              <p className="text-xs text-[#4C3322]/65 font-light leading-relaxed">Here is a quick look at your sanctuary modules:</p>
               
               <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                  <i className="fas fa-plane text-2xl text-blue-500 mb-2"></i>
-                  <h3 className="font-bold text-sm dark:text-white">Travel Diary</h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">Document your journeys.</p>
+                <div className="p-4 bg-[#FAF7F2]/80 border border-[#4C3322]/10 rounded-2xl text-center">
+                  <i className="fas fa-plane text-xl text-[#8BAB70] mb-2"></i>
+                  <h3 className="font-bold text-xs">Travel Diary</h3>
+                  <p className="text-[10px] text-[#4C3322]/60 font-light mt-0.5">Document journeys.</p>
                 </div>
-                <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                  <i className="fas fa-bullseye text-2xl text-green-500 mb-2"></i>
-                  <h3 className="font-bold text-sm dark:text-white">Goals</h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">Track your progress.</p>
+                <div className="p-4 bg-[#FAF7F2]/80 border border-[#4C3322]/10 rounded-2xl text-center">
+                  <i className="fas fa-bullseye text-xl text-[#DE7A49] mb-2"></i>
+                  <h3 className="font-bold text-xs">Wellness Goals</h3>
+                  <p className="text-[10px] text-[#4C3322]/60 font-light mt-0.5">Track your metrics.</p>
                 </div>
-                <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-                  <i className="fas fa-robot text-2xl text-purple-500 mb-2"></i>
-                  <h3 className="font-bold text-sm dark:text-white">AI Partner</h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">Get personalized advice.</p>
+                <div className="p-4 bg-[#FAF7F2]/80 border border-[#4C3322]/10 rounded-2xl text-center">
+                  <i className="fas fa-robot text-xl text-[#8BAB70] mb-2"></i>
+                  <h3 className="font-bold text-xs">AI Companion</h3>
+                  <p className="text-[10px] text-[#4C3322]/60 font-light mt-0.5">Get advice.</p>
                 </div>
-                <div className="p-4 bg-pink-50 dark:bg-pink-900/20 rounded-xl">
-                  <i className="fas fa-users text-2xl text-pink-500 mb-2"></i>
-                  <h3 className="font-bold text-sm dark:text-white">Community</h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">Connect & Share.</p>
+                <div className="p-4 bg-[#FAF7F2]/80 border border-[#4C3322]/10 rounded-2xl text-center">
+                  <i className="fas fa-users text-xl text-[#DE7A49] mb-2"></i>
+                  <h3 className="font-bold text-xs">Sanctuary Circle</h3>
+                  <p className="text-[10px] text-[#4C3322]/60 font-light mt-0.5">Connect & Share.</p>
                 </div>
               </div>
             </div>
@@ -239,17 +246,17 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ user, onComple
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-gray-50 dark:bg-dark-mode-input-bg flex justify-between">
+        <div className="p-4.5 bg-[#FAF7F2] border-t border-[#4C3322]/10 flex items-center justify-between">
           {step > 1 ? (
-            <button onClick={handleBack} className="px-6 py-2 text-gray-600 dark:text-gray-300 font-semibold">Back</button>
+            <button onClick={handleBack} className="px-5 py-3 text-[#4C3322]/70 hover:text-[#4C3322] font-bold text-xs uppercase tracking-wider cursor-pointer">Back</button>
           ) : (
-            <div></div>
+            <div className="w-12"></div>
           )}
           
           {step < 5 ? (
-            <button onClick={handleNext} className="bg-primary-teal text-white px-6 py-2 rounded-lg font-semibold hover:bg-secondary-mint transition-colors">Next</button>
+            <button onClick={handleNext} className="bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider shadow-md transition-colors cursor-pointer">Next</button>
           ) : (
-            <button onClick={handleComplete} className="bg-primary-teal text-white px-8 py-2 rounded-lg font-bold hover:bg-secondary-mint transition-colors shadow-lg">Get Started</button>
+            <button onClick={handleComplete} className="bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] px-8 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider shadow-md transition-colors cursor-pointer">Get Started</button>
           )}
         </div>
       </div>
