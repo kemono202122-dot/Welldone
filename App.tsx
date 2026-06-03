@@ -57,7 +57,7 @@ const DEFAULT_WELLNESS_BANNERS: WellnessBanner[] = [
         id: 'wb1',
         mediaType: 'image',
         mediaUrl: 'https://picsum.photos/seed/wellnesshero/1600/600',
-        title: 'Welldone Wellness.',
+        title: 'Cereen Wellness.',
         subtitle: 'Nurture your body, mind, and spirit.'
     },
     {

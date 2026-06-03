@@ -565,7 +565,7 @@ export const DatingPage: React.FC = () => {
         {errorDating && (
             <div className="bg-[#DE7A49]/10 border border-[#DE7A49]/20 text-[#DE7A49] px-6 py-4.5 rounded-2xl mb-8 flex items-center shadow-sm animate-fade-in text-xs font-bold uppercase tracking-wide gap-2">
               <i className="fas fa-exclamation-circle text-sm"></i>
-              <span>Matchmaking Scan Error: {errorDating}</span>
+              <span>Companion Search Scan Error: {errorDating}</span>
             </div>
         )}
 
@@ -596,7 +596,7 @@ export const DatingPage: React.FC = () => {
                        <i className={`far ${searchMode === 'cosmic' ? 'fa-star' : 'fa-handshake'}`}></i>
                     </div>
                     <p className="text-[#4C3322] font-serif text-lg font-black mb-1">Seek Conscious Connections</p>
-                    <p className="text-xs text-[#4C3322]/50 font-light">Describe companion details or take the vibe quiz to trigger matchmaking scan.</p>
+                    <p className="text-xs text-[#4C3322]/50 font-light">Describe companion details or take the vibe quiz to search for matches.</p>
                  </div>
              )
         )}

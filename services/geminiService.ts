@@ -304,7 +304,7 @@ export async function getDatingMatches(currentUser: User, allUsers: User[], pref
     const ai = getGeminiClient();
     const candidates = allUsers.filter(u => u.id !== currentUser.id).map(u => ({ id: u.id, name: u.name, bio: u.bio, interests: u.interests }));
     const prompt = `
-        Find romantic matches for ${currentUser.name} based on: ${JSON.stringify(prefs)}.
+        Find mindful travel companions or buddy matches for ${currentUser.name} based on: ${JSON.stringify(prefs)}.
         Candidates: ${JSON.stringify(candidates)}.
         Return JSON array:
         [{ "id": "string", "name": "string", "compatibilityScore": number, "reason": "string", "icebreaker": "string" }]
@@ -323,7 +323,7 @@ export async function getAstrologyMatches(currentUser: User, allUsers: User[], p
     const ai = getGeminiClient();
     const candidates = allUsers.filter(u => u.id !== currentUser.id).map(u => ({ id: u.id, name: u.name }));
     const prompt = `
-        Simulate astrology match for ${currentUser.name} based on prefs: ${JSON.stringify(prefs)}.
+        Simulate cosmic connection alignment for travel companions or buddy matches for ${currentUser.name} based on prefs: ${JSON.stringify(prefs)}.
         Candidates: ${JSON.stringify(candidates)}.
         Return JSON array:
         [{ "id": "string", "name": "string", "compatibilityScore": number, "reason": "string (cosmic reason)", "icebreaker": "string" }]

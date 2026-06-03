@@ -229,7 +229,7 @@ export const MarketplacePage: React.FC = () => {
             <div className="col-span-1 md:col-span-2 space-y-3">
               <h4 className="font-serif text-xl font-black text-[#4C3322]">{selectedListing.name}</h4>
               <p className="text-xs text-[#4C3322]/60 font-light leading-relaxed max-w-sm">
-                Redefining health and happiness through conscious living and professional guidance. Partnering with Welldone to log daily alignments.
+                Redefining health and happiness through conscious living and professional guidance. Partnering with Cereen to log daily alignments.
               </p>
             </div>
             <div className="space-y-4">
@@ -250,7 +250,7 @@ export const MarketplacePage: React.FC = () => {
             </div>
           </div>
           <div className="max-w-7xl w-full mx-auto px-6 md:px-12 mt-12 pt-6 border-t border-[#4C3322]/5 text-center">
-            <p className="text-[10px] font-bold uppercase text-[#4C3322]/30 tracking-widest">&copy; 2026 {selectedListing.name} x Welldone Sanctuary. All Rights Reserved.</p>
+            <p className="text-[10px] font-bold uppercase text-[#4C3322]/30 tracking-widest">&copy; 2026 {selectedListing.name} x Cereen Sanctuary. All Rights Reserved.</p>
           </div>
         </footer>
       </div>
