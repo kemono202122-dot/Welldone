@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../App';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +28,7 @@ export const VirtualPartnerCreationPage: React.FC = () => {
   const [visualStyleInput, setVisualStyleInput] = useState('');
   const [vibeInput, setVibeInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
-  const [commStyleInput, setCommStyleInput] = useState(''); // New state for communication style
+  const [commStyleInput, setCommStyleInput] = useState(''); 
 
   // Editing State
   const [isEditing, setIsEditing] = useState(false);
@@ -39,7 +38,6 @@ export const VirtualPartnerCreationPage: React.FC = () => {
   const [editedPersonalityTraits, setEditedPersonalityTraits] = useState('');
   const [editedScenario, setEditedScenario] = useState('');
   const [editedGoals, setEditedGoals] = useState('');
-
 
   // Redirect if no user is logged in
   useEffect(() => {
@@ -61,7 +59,6 @@ export const VirtualPartnerCreationPage: React.FC = () => {
   }, [virtualPartner]);
 
   const handleGeneratePartner = async () => {
-    // Construct the prompt from detailed inputs if provided, else fallback to description
     let finalPrompt = descriptionInput;
     
     if (nameInput || visualStyleInput || vibeInput || commStyleInput) {
@@ -107,311 +104,405 @@ export const VirtualPartnerCreationPage: React.FC = () => {
   };
 
   const getProgressBarColor = (value: number) => {
-    if (value > 75) return `bg-primary-teal ${isDarkMode ? 'dark:bg-primary-teal-dark' : ''}`;
-    if (value > 40) return `bg-secondary-mint ${isDarkMode ? 'dark:bg-secondary-mint-dark' : ''}`;
-    if (value > 20) return `bg-orange-400 ${isDarkMode ? 'dark:bg-orange-500' : ''}`;
-    return `bg-red-500 ${isDarkMode ? 'dark:bg-red-600' : ''}`;
-  }
+    if (value > 75) return 'bg-[#8BAB70]';
+    if (value > 45) return 'bg-[#DE7A49]';
+    return 'bg-[#DE7A49]/70';
+  };
 
   if (!currentUser) {
     return null; 
   }
 
   return (
-    <div className="p-6 bg-white dark:bg-dark-mode-card-bg rounded-lg shadow-md max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold text-dark-text dark:text-dark-mode-text mb-8 text-center">Your Virtual Wellness Partner</h2>
+    <div className="min-h-screen bg-[#FAF7F2] text-[#4C3322] font-outfit p-4 md:p-6 lg:p-8 flex flex-col relative overflow-hidden select-none selection:bg-[#8BAB70] selection:text-white">
+      
+      {/* Background blurs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#8BAB70]/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#DE7A49]/5 blur-3xl pointer-events-none" />
 
-      {errorVirtualPartner && (
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded relative mb-6" role="alert">
-          <strong className="font-bold">Error!</strong>
-          <span className="block sm:inline ml-2">{errorVirtualPartner}</span>
-        </div>
-      )}
-
-      {loadingVirtualPartner ? (
-        <div className="flex flex-col items-center justify-center h-64">
-          <LoadingSpinner />
-          <p className="mt-4 text-primary-teal dark:text-primary-teal-dark text-lg">Designing your ideal partner...</p>
-        </div>
-      ) : !virtualPartner ? (
-        // Create Partner Form
-        <div className="max-w-2xl mx-auto">
-          <p className="text-xl text-text-base dark:text-dark-mode-text-base mb-6 text-center">Design your perfect companion:</p>
+      {/* HEADER SECTION */}
+      <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-4 mb-8 border-b border-[#4C3322]/5 z-10">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="w-8 h-8 rounded-full border border-[#4C3322]/10 hover:bg-[#4C3322] hover:text-[#FAF7F2] flex items-center justify-center transition-all cursor-pointer shadow-sm"
+            title="Back to Dashboard"
+          >
+            <i className="fas fa-arrow-left text-xs"></i>
+          </button>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Partner Name</label>
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate('/')}>
+            <svg className="w-8 h-8 text-[#4C3322]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm0 12a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm-6-6a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm12 0a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z" />
+            </svg>
+            <div>
+              <h1 className="font-serif text-2xl font-black tracking-tight leading-none">Cereen</h1>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-light text-[#4C3322]/60">magazines</span>
+            </div>
+          </div>
+        </div>
+
+        {/* User Badge */}
+        <div className="flex items-center gap-3 bg-white/50 border border-[#4C3322]/10 rounded-full px-4 py-1.5 shadow-sm">
+          <img 
+            src={currentUser.avatar || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80"} 
+            className="w-7 h-7 rounded-full border border-[#4C3322]/10 object-cover shadow-sm"
+            alt="Avatar"
+          />
+          <span className="text-xs font-semibold hidden sm:inline">{currentUser.name.split(' ')[0]}</span>
+        </div>
+      </header>
+
+      {/* CORE WORKSPACE */}
+      <div className="max-w-4xl w-full mx-auto space-y-8 flex-1 z-10">
+
+        {errorVirtualPartner && (
+          <div className="bg-[#DE7A49]/10 border border-[#DE7A49]/30 text-[#DE7A49] px-6 py-4 rounded-[1.8rem] text-sm font-semibold flex items-center gap-3 shadow-sm" role="alert">
+            <i className="fas fa-exclamation-circle"></i>
+            <span>{errorVirtualPartner}</span>
+          </div>
+        )}
+
+        {loadingVirtualPartner ? (
+          <div className="flex flex-col items-center justify-center h-96 bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-8 shadow-sm">
+            <LoadingSpinner />
+            <p className="mt-6 text-[#8BAB70] font-black text-sm uppercase tracking-widest animate-pulse">Designing your ideal companion...</p>
+          </div>
+        ) : !virtualPartner ? (
+          
+          /* CREATE COMPANION FORM */
+          <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 md:p-10 shadow-sm space-y-8">
+            <div className="space-y-2 text-center border-b border-[#4C3322]/5 pb-6">
+              <span className="text-[10px] tracking-[0.25em] font-bold text-[#8BAB70] uppercase">Sanctuary Guide Setup</span>
+              <h2 className="font-serif text-3xl font-black text-[#4C3322]">Form Your Guide Persona.</h2>
+              <p className="text-sm font-light text-[#4C3322]/70 max-w-lg mx-auto">
+                Design a virtual companion to discuss stress relief, breathing goals, or read wellness chapters together.
+              </p>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-[#4C3322]/50 tracking-wider uppercase ml-1 block">Companion Name</label>
                   <input
                     type="text"
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/10 rounded-full px-5 py-3.5 focus:outline-none focus:border-[#8BAB70] focus:bg-white text-sm text-[#4C3322] placeholder-[#4C3322]/40 transition-all shadow-inner"
                     placeholder="e.g. Soha"
                     value={nameInput}
                     onChange={(e) => setNameInput(e.target.value)}
                   />
-              </div>
-              <div>
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Visual Style</label>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-[#4C3322]/50 tracking-wider uppercase ml-1 block">Visual Persona / Vibe</label>
                   <input
                     type="text"
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-                    placeholder="e.g. Model, Athletic, Artistic"
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/10 rounded-full px-5 py-3.5 focus:outline-none focus:border-[#8BAB70] focus:bg-white text-sm text-[#4C3322] placeholder-[#4C3322]/40 transition-all shadow-inner"
+                    placeholder="e.g. Artistic, Athletic, Reader"
                     value={visualStyleInput}
                     onChange={(e) => setVisualStyleInput(e.target.value)}
                   />
+                </div>
               </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Relationship Vibe</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-[#4C3322]/50 tracking-wider uppercase ml-1 block">Relationship Role</label>
                   <select
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/10 rounded-full px-5 py-3.5 focus:outline-none focus:border-[#8BAB70] focus:bg-white text-sm text-[#4C3322] transition-all cursor-pointer shadow-inner appearance-none"
                     value={vibeInput}
                     onChange={(e) => setVibeInput(e.target.value)}
                   >
-                      <option value="">Select Vibe...</option>
-                      <option value="Romantic & Affectionate">Romantic & Affectionate</option>
-                      <option value="Supportive Best Friend">Supportive Best Friend</option>
-                      <option value="Strict Coach">Strict Coach</option>
-                      <option value="Wise Mentor">Wise Mentor</option>
+                    <option value="">Select Vibe Role...</option>
+                    <option value="Romantic & Affectionate">Romantic & Affectionate</option>
+                    <option value="Supportive Best Friend">Supportive Best Friend</option>
+                    <option value="Strict Coach">Strict Coach</option>
+                    <option value="Wise Mentor">Wise Mentor</option>
                   </select>
-              </div>
-              <div>
-                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Communication Style</label>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-[#4C3322]/50 tracking-wider uppercase ml-1 block">Communication style</label>
                   <select
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/10 rounded-full px-5 py-3.5 focus:outline-none focus:border-[#8BAB70] focus:bg-white text-sm text-[#4C3322] transition-all cursor-pointer shadow-inner appearance-none"
                     value={commStyleInput}
                     onChange={(e) => setCommStyleInput(e.target.value)}
                   >
-                      <option value="">Select Style...</option>
-                      <option value="Bold & Direct">Bold & Direct</option>
-                      <option value="Gentle & Empathetic">Gentle & Empathetic</option>
-                      <option value="Playful & Witty">Playful & Witty</option>
-                      <option value="Intellectual & Deep">Intellectual & Deep</option>
-                      <option value="Open-Minded & Adventurous">Open-Minded & Adventurous</option>
+                    <option value="">Select Communication Style...</option>
+                    <option value="Bold & Direct">Bold & Direct</option>
+                    <option value="Gentle & Empathetic">Gentle & Empathetic</option>
+                    <option value="Playful & Witty">Playful & Witty</option>
+                    <option value="Intellectual & Deep">Intellectual & Deep</option>
+                    <option value="Open-Minded & Adventurous">Open-Minded & Adventurous</option>
                   </select>
+                </div>
               </div>
-          </div>
 
-          <div className="mb-6">
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Detailed Description (Optional)</label>
-              <textarea
-                className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal dark:focus:ring-primary-teal-dark bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-                rows={4}
-                placeholder="Any specific traits or backstory? e.g. She loves hiking and reading poetry..."
-                value={descriptionInput}
-                onChange={(e) => setDescriptionInput(e.target.value)}
-              ></textarea>
-          </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#4C3322]/50 tracking-wider uppercase ml-1 block">Detailed Description (Optional)</label>
+                <textarea
+                  className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/10 rounded-3xl p-5 focus:outline-none focus:border-[#8BAB70] focus:bg-white text-sm text-[#4C3322] placeholder-[#4C3322]/40 resize-none shadow-inner font-light h-28"
+                  placeholder="Specify particular personality elements or backstory notes... e.g. Loves reading wellness books and walks in the park..."
+                  value={descriptionInput}
+                  onChange={(e) => setDescriptionInput(e.target.value)}
+                />
+              </div>
 
-          <button
-            onClick={handleGeneratePartner}
-            className="w-full bg-gradient-to-r from-primary-teal to-brand-blue text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold text-lg disabled:opacity-70 disabled:cursor-not-allowed"
-            disabled={!nameInput && !descriptionInput}
-          >
-            Bring Partner to Life
-          </button>
-        </div>
-      ) : (
-        // Display Virtual Partner Profile
-        <div className="flex flex-col items-center animate-fade-in">
-          <div className="relative mb-6">
-             <img
-                src={virtualPartner.avatar}
-                alt={`${virtualPartner.name}'s avatar`}
-                className="w-40 h-40 rounded-full border-4 border-primary-teal dark:border-primary-teal-dark object-cover shadow-2xl"
-             />
-             <div className="absolute bottom-2 right-2 bg-white dark:bg-dark-mode-card-bg px-3 py-1 rounded-full text-xs font-bold text-brand-teal shadow-sm border border-gray-200 dark:border-gray-700">
-                 {virtualPartner.visualStyle || 'Partner'}
-             </div>
+              <button
+                type="button"
+                onClick={handleGeneratePartner}
+                className="w-full py-4 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] rounded-full font-black text-sm tracking-widest uppercase shadow transition-all duration-300 cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                disabled={!nameInput && !descriptionInput}
+              >
+                Bring Partner to Life
+              </button>
+            </div>
           </div>
-
-          {isEditing ? (
-            <input
-              type="text"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-              className="text-4xl font-bold text-dark-text dark:text-dark-mode-text text-center mb-4 p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-dark-mode-input-bg"
-            />
-          ) : (
-            <h3 className="text-4xl font-bold text-dark-text dark:text-dark-mode-text mb-2">{virtualPartner.name}</h3>
-          )}
+        ) : (
           
-          <div className="flex gap-2 mb-6">
-             {virtualPartner.relationshipType && <span className="bg-brand-pink/10 text-brand-pink px-3 py-1 rounded-full text-sm font-bold">{virtualPartner.relationshipType}</span>}
-             {virtualPartner.communicationStyle && <span className="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full text-sm font-bold">{virtualPartner.communicationStyle}</span>}
-          </div>
+          /* COMPANION PASSPORT DISPLAY */
+          <div className="flex flex-col items-center bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 md:p-10 shadow-sm animate-fade-in space-y-8">
+            
+            {/* Avatar frame */}
+            <div className="relative">
+              {/* Outer visualizer ring */}
+              <div className="absolute inset-[-8px] rounded-full border-2 border-[#8BAB70]/30 animate-pulse pointer-events-none" />
+              <img
+                src={virtualPartner.avatar}
+                alt={virtualPartner.name}
+                className="w-40 h-40 rounded-full border-4 border-[#FAF7F2] object-cover shadow-lg relative z-10"
+              />
+              <span className="absolute bottom-2 right-2 bg-[#8BAB70] text-[#FAF7F2] px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow z-20">
+                {virtualPartner.visualStyle || 'Partner'}
+              </span>
+            </div>
 
-          <div className="w-full md:w-3/4 lg:w-2/3 space-y-6 text-center">
-            {isEditing ? (
-              <textarea
-                value={editedBio}
-                onChange={(e) => setEditedBio(e.target.value)}
-                rows={4}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-sky dark:focus:ring-accent-sky-dark bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-              ></textarea>
-            ) : (
-              <p className="text-lg text-text-base dark:text-dark-mode-text-base leading-relaxed italic">"{virtualPartner.bio}"</p>
-            )}
-
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-              <h4 className="text-xl font-bold text-dark-text dark:text-dark-mode-text mb-4">Interests</h4>
+            {/* Name Details */}
+            <div className="text-center space-y-2">
               {isEditing ? (
                 <input
                   type="text"
-                  value={editedInterests}
-                  onChange={(e) => setEditedInterests(e.target.value)}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-sky dark:focus:ring-accent-sky-dark bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="text-3xl font-serif font-black text-[#4C3322] text-center bg-[#FAF7F2]/60 border border-[#4C3322]/15 rounded-full px-5 py-2.5 focus:outline-none focus:border-[#8BAB70]"
                 />
               ) : (
-                <div className="flex flex-wrap justify-center gap-2">
-                  {virtualPartner.interests.map((interest, index) => (
-                    <span
-                      key={index}
-                      className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium shadow-sm"
-                    >
-                      {interest}
-                    </span>
-                  ))}
-                </div>
+                <h3 className="text-3xl font-serif font-black text-[#4C3322]">{virtualPartner.name}</h3>
               )}
+              
+              <div className="flex flex-wrap justify-center gap-1.5 pt-1.5 select-none">
+                {virtualPartner.relationshipType && (
+                  <span className="px-3 py-1 rounded-full border border-[#8BAB70]/20 bg-[#8BAB70]/10 text-[#8BAB70] text-[9px] font-bold uppercase">
+                    {virtualPartner.relationshipType}
+                  </span>
+                )}
+                {virtualPartner.communicationStyle && (
+                  <span className="px-3 py-1 rounded-full border border-[#DE7A49]/20 bg-[#DE7A49]/10 text-[#DE7A49] text-[9px] font-bold uppercase">
+                    {virtualPartner.communicationStyle}
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-              <h4 className="text-xl font-bold text-dark-text dark:text-dark-mode-text mb-4">Personality Traits</h4>
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedPersonalityTraits}
-                  onChange={(e) => setEditedPersonalityTraits(e.target.value)}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-sky dark:focus:ring-accent-sky-dark bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-                />
-              ) : (
-                <div className="flex flex-wrap justify-center gap-2">
-                  {virtualPartner.personalityTraits.map((trait, index) => (
-                    <span
-                      key={index}
-                      className="bg-brand-mint dark:bg-teal-900/50 text-teal-800 dark:text-teal-200 px-4 py-2 rounded-lg font-bold shadow-sm"
-                    >
-                      {trait}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* New Gameplay Elements Display */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 text-left w-full">
-              <h4 className="text-xl font-bold text-dark-text dark:text-dark-mode-text mb-6 text-center">Relationship Dynamics</h4>
-
-              {/* Current Scenario */}
-              <div className="bg-light-background dark:bg-dark-mode-input-bg p-5 rounded-2xl shadow-inner mb-6 border border-gray-200 dark:border-gray-700">
-                <p className="font-bold text-dark-text dark:text-dark-mode-text text-sm mb-2 uppercase tracking-wide">Current Context</p>
+            {/* Content Sheets */}
+            <div className="w-full max-w-2xl space-y-6 text-center">
+              
+              {/* Biography block */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-[#4C3322]/40 tracking-wider uppercase block">Biography</label>
                 {isEditing ? (
                   <textarea
-                    value={editedScenario}
-                    onChange={(e) => setEditedScenario(e.target.value)}
-                    rows={2}
-                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-                  ></textarea>
+                    value={editedBio}
+                    onChange={(e) => setEditedBio(e.target.value)}
+                    rows={4}
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/15 rounded-3xl p-4 focus:outline-none focus:border-[#8BAB70] text-sm text-[#4C3322] font-light resize-none h-24"
+                  />
                 ) : (
-                  <p className="text-text-base dark:text-dark-mode-text-base text-lg font-serif">{virtualPartner.currentScenario || "No active scenario."}</p>
+                  <p className="text-sm text-[#4C3322]/80 leading-relaxed font-light italic bg-[#FAF7F2]/30 p-4 rounded-3xl border border-[#4C3322]/5">
+                    "{virtualPartner.bio}"
+                  </p>
                 )}
               </div>
 
-              {/* Emotional State */}
-              <div className="mb-6">
-                <p className="font-bold text-dark-text dark:text-dark-mode-text text-sm mb-3 uppercase tracking-wide">Emotional State</p>
-                <div className="space-y-3">
-                  {['happiness', 'motivation', 'trust'].map((emotionKey) => {
-                    const value = virtualPartner.emotionalState[emotionKey as keyof typeof virtualPartner.emotionalState];
-                    return (
-                      <div key={emotionKey}>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-bold capitalize text-gray-600 dark:text-gray-400">{emotionKey}</span>
-                          <span className="text-sm font-bold text-brand-teal">{value}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                          <div
-                            className={`${getProgressBarColor(value)} h-2.5 rounded-full transition-all duration-1000`}
-                            style={{ width: `${value}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Relationship Goals */}
-              <div>
-                <p className="font-bold text-dark-text dark:text-dark-mode-text text-sm mb-3 uppercase tracking-wide">Shared Goals</p>
+              {/* Interests tag badges */}
+              <div className="border-t border-[#4C3322]/5 pt-6 space-y-3">
+                <h4 className="text-[10px] font-bold text-[#4C3322]/40 tracking-wider uppercase">Interests Catalog</h4>
                 {isEditing ? (
-                  <textarea
-                    value={editedGoals}
-                    onChange={(e) => setEditedGoals(e.target.value)}
-                    rows={3}
-                    className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-                  ></textarea>
+                  <input
+                    type="text"
+                    value={editedInterests}
+                    onChange={(e) => setEditedInterests(e.target.value)}
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/15 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-[#8BAB70]"
+                    placeholder="Comma-separated interests..."
+                  />
                 ) : (
-                  <ul className="space-y-2">
-                    {virtualPartner.relationshipGoals.map((goal, index) => (
-                      <li key={index} className="flex items-center bg-gray-50 dark:bg-dark-mode-input-bg p-3 rounded-xl border border-gray-100 dark:border-gray-700">
-                        {goal.complete ? (
-                          <i className="fas fa-check-circle text-green-500 text-xl mr-3"></i>
-                        ) : (
-                          <i className="far fa-circle text-gray-400 text-xl mr-3"></i>
-                        )}
-                        <span className={`font-medium ${goal.complete ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>{goal.name}</span>
-                      </li>
+                  <div className="flex flex-wrap justify-center gap-1.5">
+                    {virtualPartner.interests.map((interest, index) => (
+                      <span
+                        key={index}
+                        className="bg-white border border-[#4C3322]/10 text-[#4C3322] text-[10px] font-bold px-3 py-1 rounded-full shadow-sm"
+                      >
+                        {interest}
+                      </span>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
-            </div>
-          </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mt-10 w-full justify-center max-w-lg">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={handleSaveEdits}
-                  className="flex-1 bg-primary-teal text-white px-6 py-3 rounded-xl shadow font-bold hover:bg-secondary-mint transition-colors"
-                >
-                  Save Changes
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="flex-1 bg-white border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors"
-                >
-                  Edit Persona
-                </button>
-                <button
-                  onClick={() => navigate('/virtual-partner/chat')}
-                  className="flex-1 bg-gradient-to-r from-brand-teal to-brand-blue text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all font-bold flex items-center justify-center gap-2"
-                >
-                  <i className="fas fa-comments"></i> Start Chat
-                </button>
-                <button
-                  onClick={resetVirtualPartner}
-                  className="flex-1 bg-red-50 text-red-600 border border-red-100 px-6 py-3 rounded-xl font-bold hover:bg-red-100 transition-colors"
-                >
-                  Reset
-                </button>
-              </>
-            )}
+              {/* Personality traits tag badges */}
+              <div className="border-t border-[#4C3322]/5 pt-6 space-y-3">
+                <h4 className="text-[10px] font-bold text-[#4C3322]/40 tracking-wider uppercase">Personality Attributes</h4>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedPersonalityTraits}
+                    onChange={(e) => setEditedPersonalityTraits(e.target.value)}
+                    className="w-full bg-[#FAF7F2]/60 border border-[#4C3322]/15 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-[#8BAB70]"
+                    placeholder="Comma-separated personality traits..."
+                  />
+                ) : (
+                  <div className="flex flex-wrap justify-center gap-1.5">
+                    {virtualPartner.personalityTraits.map((trait, index) => (
+                      <span
+                        key={index}
+                        className="bg-[#8BAB70]/10 border border-[#8BAB70]/20 text-[#8BAB70] text-[10px] font-bold px-3 py-1 rounded-full shadow-sm"
+                      >
+                        {trait}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Relationship dynamics */}
+              <div className="border-t border-[#4C3322]/5 pt-6 text-left space-y-6">
+                <h4 className="font-serif text-lg font-black text-[#4C3322] text-center mb-2">Sanctuary Dynamics</h4>
+
+                {/* Current scenario context */}
+                <div className="bg-[#FAF7F2]/60 border border-[#4C3322]/10 p-5 rounded-3xl shadow-inner space-y-1">
+                  <span className="text-[9px] font-bold text-[#4C3322]/40 uppercase tracking-wide">Active Scenario Context</span>
+                  {isEditing ? (
+                    <textarea
+                      value={editedScenario}
+                      onChange={(e) => setEditedScenario(e.target.value)}
+                      rows={2}
+                      className="w-full bg-white border border-[#4C3322]/15 rounded-xl p-3 focus:outline-none focus:border-[#8BAB70] text-xs resize-none"
+                    />
+                  ) : (
+                    <p className="text-sm font-light leading-relaxed text-[#4C3322] italic">
+                      {virtualPartner.currentScenario || "Establishing standard mindfulness contexts."}
+                    </p>
+                  )}
+                </div>
+
+                {/* Emotional index sliders */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-bold text-[#4C3322]/40 uppercase tracking-wide ml-1 block">Emotional Indices</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    {['happiness', 'motivation', 'trust'].map((emotionKey) => {
+                      const value = virtualPartner.emotionalState[emotionKey as keyof typeof virtualPartner.emotionalState];
+                      return (
+                        <div key={emotionKey} className="bg-white border border-[#4C3322]/5 rounded-3xl p-4 shadow-sm flex flex-col justify-between h-20">
+                          <div className="flex justify-between items-center text-[10px] font-bold uppercase text-[#4C3322]/60">
+                            <span>{emotionKey}</span>
+                            <span className="text-[#8BAB70]">{value}%</span>
+                          </div>
+                          <div className="w-full bg-[#FAF7F2] border border-[#4C3322]/5 h-2 rounded-full overflow-hidden mt-2">
+                            <div
+                              className={`${getProgressBarColor(value)} h-full rounded-full transition-all duration-1000`}
+                              style={{ width: `${value}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Relationship goals list */}
+                <div className="space-y-3">
+                  <span className="text-[10px] font-bold text-[#4C3322]/40 uppercase tracking-wide ml-1 block">Shared Goals</span>
+                  {isEditing ? (
+                    <textarea
+                      value={editedGoals}
+                      onChange={(e) => setEditedGoals(e.target.value)}
+                      rows={3}
+                      className="w-full bg-white border border-[#4C3322]/15 rounded-3xl p-4 focus:outline-none focus:border-[#8BAB70] text-xs resize-none h-24"
+                      placeholder="Goal 1; Goal 2 (complete)..."
+                    />
+                  ) : (
+                    <ul className="space-y-2 select-none">
+                      {virtualPartner.relationshipGoals.map((goal, index) => (
+                        <li 
+                          key={index} 
+                          className="flex items-center justify-between bg-[#FAF7F2]/40 border border-[#4C3322]/5 p-3.5 rounded-2xl shadow-sm"
+                        >
+                          <span className={`text-xs font-semibold ${goal.complete ? 'line-through text-[#4C3322]/40' : 'text-[#4C3322]'}`}>
+                            {goal.name}
+                          </span>
+                          {goal.complete ? (
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#8BAB70]/10 border border-[#8BAB70]/20 text-[#8BAB70] text-[8px] font-bold uppercase tracking-wider">
+                              Done
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#DE7A49]/10 border border-[#DE7A49]/20 text-[#DE7A49] text-[8px] font-bold uppercase tracking-wider">
+                              Active
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Action buttons panel */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 w-full justify-center max-w-lg select-none">
+              {isEditing ? (
+                <>
+                  <button
+                    onClick={handleSaveEdits}
+                    className="flex-grow py-3 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] rounded-full text-xs font-bold uppercase tracking-wider shadow transition-all cursor-pointer"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    className="flex-grow py-3 border border-[#4C3322]/10 bg-white hover:bg-[#4C3322]/5 text-[#4C3322] rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex-grow py-3 border border-[#4C3322]/10 bg-white hover:bg-[#4C3322]/5 text-[#4C3322] rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  >
+                    Edit Persona
+                  </button>
+                  <button
+                    onClick={() => navigate('/virtual-partner/chat')}
+                    className="flex-grow py-3 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] rounded-full text-xs font-bold uppercase tracking-wider shadow transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <i className="fas fa-comments text-[10px]"></i> Start Chat
+                  </button>
+                  <button
+                    onClick={resetVirtualPartner}
+                    className="flex-grow py-3 border border-[#DE7A49]/20 hover:bg-[#DE7A49]/5 text-[#DE7A49] rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  >
+                    Reset Persona
+                  </button>
+                </>
+              )}
+            </div>
+
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
+
     </div>
   );
 };

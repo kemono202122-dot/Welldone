@@ -1,14 +1,12 @@
-
 import React, { useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { AppContext } from '../App';
 import { useNavigate } from 'react-router-dom';
 import { VirtualPartnerChatMessage } from '../types';
 import { LoadingSpinner } from './LoadingSpinner';
 import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
-import { getVirtualPartnerWelcome } from '../services/geminiService'; // Import new service
+import { getVirtualPartnerWelcome } from '../services/geminiService'; 
 
 // --- Audio Helper Functions (Gemini Live API Standards) ---
-
 function base64ToUint8Array(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -32,7 +30,6 @@ function createBlob(data: Float32Array): { data: string; mimeType: string } {
   const l = data.length;
   const int16 = new Int16Array(l);
   for (let i = 0; i < l; i++) {
-    // Clamp values to -1 to 1 before converting
     const s = Math.max(-1, Math.min(1, data[i]));
     int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
   }
@@ -95,7 +92,7 @@ export const VirtualPartnerChatPage: React.FC = () => {
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const nextStartTimeRef = useRef<number>(0);
   const scheduledSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
-  const sessionRef = useRef<any>(null); // To store the active session
+  const sessionRef = useRef<any>(null); 
 
   // Redirect if no user or virtual partner is logged in/created
   useEffect(() => {
@@ -111,26 +108,6 @@ export const VirtualPartnerChatPage: React.FC = () => {
       const initChat = async () => {
           if (virtualPartner && currentUser && virtualPartnerChatHistory.length === 0 && !isInitializing) {
               setIsInitializing(true);
-              const welcomeText = await getVirtualPartnerWelcome(virtualPartner, currentUser.name.split(' ')[0]);
-              
-              // We need to manually inject this into the history in context without triggering a full AI response yet
-              // Assuming AppContext allows modifying history, or we simulate a received message.
-              // Since App.tsx manages history via sendVirtualPartnerMessage which calls AI, we might need a direct way to add a system message.
-              // For now, we will simulate the Partner typing it out.
-              
-              // NOTE: In a real app, we'd have a 'receiveMessage' function in context. 
-              // Since we don't, we will use a workaround or assuming the backend/service handles persistence.
-              // Here, we'll mimic it by creating a dummy message object and updating state if possible, 
-              // BUT `virtualPartnerChatHistory` is read-only from context perspective usually unless there's a setter.
-              // The `sendVirtualPartnerMessage` function in App.tsx adds user message then bot message.
-              // We will leverage `sendVirtualPartnerMessage` with a special prompt if history is empty, 
-              // OR better, we just render it if history is empty, but that's UI only.
-              
-              // For this demo, let's just use the `updateVirtualPartner` to trigger a re-render if needed, 
-              // but mostly we want to persist this. Since `sendVirtualPartnerMessage` is user-driven,
-              // we will just display a "Greeting" bubble locally or trigger a hidden user prompt like "Say hello".
-              
-              // Triggering AI to say hello via hidden prompt:
               await sendVirtualPartnerMessage("Say a warm, realistic welcome message to me based on your persona.");
               setIsInitializing(false);
           }
@@ -198,14 +175,12 @@ export const VirtualPartnerChatPage: React.FC = () => {
   };
 
   const getProgressBarColor = (value: number) => {
-    if (value > 75) return `bg-primary-teal ${isDarkMode ? 'dark:bg-primary-teal-dark' : ''}`;
-    if (value > 40) return `bg-secondary-mint ${isDarkMode ? 'dark:bg-secondary-mint-dark' : ''}`;
-    if (value > 20) return `bg-orange-400 ${isDarkMode ? 'dark:bg-orange-500' : ''}`;
-    return `bg-red-500 ${isDarkMode ? 'dark:bg-red-600' : ''}`;
+    if (value > 75) return 'bg-[#8BAB70]';
+    if (value > 45) return 'bg-[#DE7A49]';
+    return 'bg-[#DE7A49]/70';
   }
 
   // --- Voice Call Logic ---
-
   const startVoiceCall = async () => {
     if (!virtualPartner) return;
     setIsCallActive(true);
@@ -215,21 +190,16 @@ export const VirtualPartnerChatPage: React.FC = () => {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
-      // Initialize Audio Contexts
-      // Input: 16kHz required by Gemini
       const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-      // Output: 24kHz required by Gemini
       const outputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       
       inputAudioContextRef.current = inputCtx;
       outputAudioContextRef.current = outputCtx;
       nextStartTimeRef.current = outputCtx.currentTime;
 
-      // Request Mic Access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaStreamRef.current = stream;
 
-      // Configure System Instruction based on Partner Persona
       const systemInstruction = `
         You are ${virtualPartner.name}. 
         Role: ${virtualPartner.relationshipType || 'Wellness Partner'}.
@@ -242,13 +212,12 @@ export const VirtualPartnerChatPage: React.FC = () => {
         Be warm, engaging, and react to the user's emotions.
       `;
 
-      // Establish Connection
       const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }, // 'Kore' is generally a warm voice
+            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }, 
           },
           systemInstruction: systemInstruction,
         },
@@ -258,7 +227,6 @@ export const VirtualPartnerChatPage: React.FC = () => {
             setCallStatus('listening');
             setIsConnectingCall(false);
 
-            // Setup Input Streaming
             const source = inputCtx.createMediaStreamSource(stream);
             const processor = inputCtx.createScriptProcessor(4096, 1, 1);
             
@@ -274,14 +242,12 @@ export const VirtualPartnerChatPage: React.FC = () => {
             processor.connect(inputCtx.destination);
           },
           onmessage: async (message: LiveServerMessage) => {
-            // Handle Audio Output
             const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
             if (base64Audio) {
-              setCallStatus('speaking'); // Visual indicator
+              setCallStatus('speaking'); 
               
               const ctx = outputAudioContextRef.current;
               if (ctx) {
-                // Ensure timing
                 nextStartTimeRef.current = Math.max(nextStartTimeRef.current, ctx.currentTime);
                 
                 const audioBuffer = await decodeAudioData(
@@ -298,7 +264,7 @@ export const VirtualPartnerChatPage: React.FC = () => {
                 source.addEventListener('ended', () => {
                    scheduledSourcesRef.current.delete(source);
                    if (scheduledSourcesRef.current.size === 0) {
-                       setCallStatus('listening'); // Back to listening when done speaking
+                       setCallStatus('listening'); 
                    }
                 });
 
@@ -308,7 +274,6 @@ export const VirtualPartnerChatPage: React.FC = () => {
               }
             }
 
-            // Handle Interruptions
             if (message.serverContent?.interrupted) {
                 console.log("Model interrupted");
                 scheduledSourcesRef.current.forEach(src => {
@@ -332,8 +297,6 @@ export const VirtualPartnerChatPage: React.FC = () => {
         }
       });
 
-      // Store session to ensure we can close it if needed, 
-      // though the library handles cleanup mostly via onclose/callbacks.
       sessionPromise.then(session => {
           sessionRef.current = session;
       });
@@ -347,12 +310,10 @@ export const VirtualPartnerChatPage: React.FC = () => {
   };
 
   const endVoiceCall = () => {
-    // 1. Stop Media Stream
     if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach(track => track.stop());
         mediaStreamRef.current = null;
     }
-    // 2. Close Audio Contexts
     if (inputAudioContextRef.current) {
         inputAudioContextRef.current.close();
         inputAudioContextRef.current = null;
@@ -361,9 +322,7 @@ export const VirtualPartnerChatPage: React.FC = () => {
         outputAudioContextRef.current.close();
         outputAudioContextRef.current = null;
     }
-    // 3. Clear Refs
     scheduledSourcesRef.current.clear();
-    // 4. Close Session
     if (sessionRef.current) {
         sessionRef.current = null;
     }
@@ -376,261 +335,295 @@ export const VirtualPartnerChatPage: React.FC = () => {
     return null;
   }
 
-  // Check if the last message is a typing indicator (for text chat)
   const isTyping = virtualPartnerChatHistory.length > 0 && virtualPartnerChatHistory[virtualPartnerChatHistory.length - 1].text === '...' && virtualPartnerChatHistory[virtualPartnerChatHistory.length - 1].isVirtualPartner;
   
   return (
-    <div className="flex flex-col h-[calc(100vh-150px)] bg-white dark:bg-dark-mode-card-bg rounded-lg shadow-lg overflow-hidden max-w-3xl mx-auto relative">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#4C3322] font-outfit p-4 md:p-6 lg:p-8 flex flex-col relative overflow-hidden select-none selection:bg-[#8BAB70] selection:text-white">
       
-      {/* Voice Call Overlay */}
-      {isCallActive && (
-        <div className="absolute inset-0 z-50 bg-gradient-to-b from-gray-900 to-black flex flex-col items-center justify-center p-8 animate-fade-in text-white">
-            {/* Header */}
-            <div className="absolute top-6 left-6 right-6 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                    <span className="text-xs font-bold tracking-widest uppercase text-gray-400">Live Voice</span>
+      {/* Background blurs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#8BAB70]/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#DE7A49]/5 blur-3xl pointer-events-none" />
+
+      {/* HEADER SECTION */}
+      <header className="max-w-7xl w-full mx-auto flex items-center justify-between py-4 mb-6 border-b border-[#4C3322]/5 z-10">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/virtual-partner/create')}
+            className="w-8 h-8 rounded-full border border-[#4C3322]/10 hover:bg-[#4C3322] hover:text-[#FAF7F2] flex items-center justify-center transition-all cursor-pointer shadow-sm"
+            title="Back to Setup Profile"
+          >
+            <i className="fas fa-arrow-left text-xs"></i>
+          </button>
+          
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate('/')}>
+            <svg className="w-8 h-8 text-[#4C3322]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm0 12a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm-6-6a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm12 0a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z" />
+            </svg>
+            <div>
+              <h1 className="font-serif text-2xl font-black tracking-tight leading-none">Cereen</h1>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-light text-[#4C3322]/60">magazines</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic header items */}
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={startVoiceCall}
+            className="w-9 h-9 rounded-full border border-[#4C3322]/15 bg-white/60 hover:bg-[#8BAB70] hover:text-[#FAF7F2] hover:border-[#8BAB70] flex items-center justify-center transition-all cursor-pointer shadow-sm"
+            title="Start Solfeggio Voice Call"
+          >
+            <i className="fas fa-phone-alt text-xs"></i>
+          </button>
+          
+          <div className="hidden sm:flex items-center gap-2.5 bg-white/55 border border-[#4C3322]/10 rounded-full px-4 py-1.5 shadow-sm text-xs font-bold text-[#4C3322]">
+            <span>Relationship:</span>
+            <div className="w-16 bg-[#FAF7F2] border border-[#4C3322]/5 rounded-full h-2 overflow-hidden">
+              <div className="bg-[#8BAB70] h-full rounded-full" style={{ width: `${virtualPartner.relationshipMeter}%` }} />
+            </div>
+            <span className="text-[#8BAB70]">{virtualPartner.relationshipMeter}%</span>
+          </div>
+        </div>
+      </header>
+
+      {/* CORE CHAT CONTAINER (Max-w 7xl matching circles & wellness) */}
+      <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch flex-grow z-10 h-[calc(100vh-170px)]">
+        
+        {/* VOICE CALL OVERLAY BACKDROP */}
+        {isCallActive && (
+          <div className="fixed inset-0 z-50 bg-[#2E1F14]/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-[#FAF7F2] animate-fade-in select-none">
+            {/* Header info */}
+            <div className="absolute top-6 left-8 right-8 flex justify-between items-center">
+              <div className="flex items-center gap-2 bg-[#DE7A49]/10 border border-[#DE7A49]/20 px-3.5 py-1.5 rounded-full text-[#DE7A49]">
+                <span className="w-1.5 h-1.5 bg-[#DE7A49] rounded-full animate-pulse" />
+                <span className="text-[10px] font-bold tracking-wider uppercase">Live Solfeggio Audio</span>
+              </div>
+              <button onClick={endVoiceCall} className="w-8 h-8 rounded-full border border-white/10 hover:bg-white/5 flex items-center justify-center transition-all">
+                <i className="fas fa-compress-alt text-xs"></i>
+              </button>
+            </div>
+
+            {/* Avatar Glowing Circles */}
+            <div className="relative mb-8">
+              {callStatus === 'speaking' && (
+                <>
+                  <div className="absolute inset-[-15px] rounded-full border-2 border-[#8BAB70]/30 animate-pulse pointer-events-none" />
+                  <div className="absolute inset-[-30px] rounded-full border border-[#8BAB70]/10 animate-ping pointer-events-none" />
+                </>
+              )}
+              {callStatus === 'listening' && (
+                <div className="absolute inset-0 rounded-full bg-[#DE7A49]/10 blur-2xl animate-pulse pointer-events-none" />
+              )}
+
+              <img 
+                src={virtualPartner.avatar} 
+                alt={virtualPartner.name} 
+                className="w-48 h-48 rounded-full object-cover border-4 border-white/10 shadow-2xl relative z-10" 
+              />
+              
+              {isConnectingCall && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full z-20 backdrop-blur-sm">
+                  <LoadingSpinner />
                 </div>
-                <button onClick={endVoiceCall} className="text-gray-400 hover:text-white transition-colors">
-                    <i className="fas fa-compress-alt text-xl"></i>
-                </button>
+              )}
             </div>
 
-            {/* Avatar / Visualizer */}
-            <div className="relative mb-12">
-                {/* Ripple Effect when speaking */}
-                {callStatus === 'speaking' && (
-                    <>
-                        <div className="absolute inset-0 rounded-full border-2 border-brand-teal/50 animate-ping-slow"></div>
-                        <div className="absolute inset-[-20px] rounded-full border border-brand-teal/30 animate-ping-slower"></div>
-                    </>
-                )}
-                {/* Listening Glow */}
-                {callStatus === 'listening' && (
-                    <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl animate-pulse"></div>
-                )}
-
-                <img 
-                    src={virtualPartner.avatar} 
-                    alt={virtualPartner.name} 
-                    className="w-48 h-48 rounded-full object-cover border-4 border-white/10 shadow-2xl relative z-10" 
-                />
-                
-                {isConnectingCall && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full z-20 backdrop-blur-sm">
-                        <LoadingSpinner />
-                    </div>
-                )}
-            </div>
-
-            {/* Status Text */}
-            <h2 className="text-3xl font-bold mb-2">{virtualPartner.name}</h2>
-            <p className="text-gray-400 font-medium text-lg mb-12 animate-pulse">
-                {isConnectingCall ? 'Connecting...' : 
-                 callStatus === 'speaking' ? 'Speaking...' : 
-                 callStatus === 'listening' ? 'Listening...' : 'Connected'}
+            {/* Companion information */}
+            <h2 className="font-serif text-3xl font-black">{virtualPartner.name}</h2>
+            <p className="text-sm font-semibold tracking-widest uppercase text-white/50 animate-pulse mt-2 mb-12">
+              {isConnectingCall ? 'Connecting Session...' : 
+               callStatus === 'speaking' ? 'Speaking...' : 
+               callStatus === 'listening' ? 'Listening...' : 'Connected'}
             </p>
 
-            {/* Controls */}
-            <div className="flex items-center gap-8">
-                <button className="p-4 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-all">
-                    <i className="fas fa-microphone-slash text-xl"></i>
-                </button>
-                <button 
-                    onClick={endVoiceCall}
-                    className="w-20 h-20 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30 flex items-center justify-center transition-all transform hover:scale-105"
-                >
-                    <i className="fas fa-phone-slash text-3xl"></i>
-                </button>
-                <button className="p-4 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-all">
-                    <i className="fas fa-volume-up text-xl"></i>
-                </button>
+            {/* controls */}
+            <div className="flex items-center gap-6">
+              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white flex items-center justify-center transition-colors">
+                <i className="fas fa-microphone-slash text-sm"></i>
+              </button>
+              <button 
+                onClick={endVoiceCall}
+                className="w-20 h-20 rounded-full bg-[#DE7A49] hover:bg-[#DE7A49]/80 text-[#FAF7F2] shadow-2xl shadow-[#DE7A49]/20 flex items-center justify-center transition-all transform hover:scale-105"
+              >
+                <i className="fas fa-phone-slash text-2xl"></i>
+              </button>
+              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white flex items-center justify-center transition-colors">
+                <i className="fas fa-volume-up text-sm"></i>
+              </button>
             </div>
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* Standard Header */}
-      <div className="p-4 bg-primary-teal dark:bg-primary-teal-dark text-white text-xl font-semibold flex items-center justify-between">
-        <div className="flex items-center overflow-hidden">
-            <button onClick={() => navigate('/virtual-partner/create')} className="mr-3 text-white hover:text-secondary-mint dark:hover:text-secondary-mint-dark flex-shrink-0" aria-label="Back to Virtual Partner Profile">
-            <i className="fas fa-arrow-left"></i>
+        {/* CHAT DISPLAY SCREEN (8 Cols) */}
+        <main className="lg:col-span-8 flex flex-col bg-white border border-[#4C3322]/10 rounded-[2.5rem] shadow-sm overflow-hidden min-h-[500px]">
+          
+          {/* Quick actions panel */}
+          <div className="bg-[#FAF7F2]/60 border-b border-[#4C3322]/5 px-4 py-2.5 flex gap-2 overflow-x-auto no-scrollbar select-none">
+            <button onClick={() => handleQuickAction('game')} className="flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#4C3322]/10 text-[10px] font-bold uppercase tracking-wider text-[#4C3322] hover:bg-[#8BAB70]/10 hover:border-[#8BAB70] hover:text-[#8BAB70] transition-colors flex items-center gap-1.5">
+              <i className="fas fa-gamepad text-xs"></i> Play Game
             </button>
-            <img src={virtualPartner.avatar} alt={virtualPartner.name} className="w-9 h-9 rounded-full mr-3 object-cover border border-white dark:border-dark-mode-card-bg flex-shrink-0" />
-            <div className="flex flex-col overflow-hidden">
-                <span className="truncate text-base">{virtualPartner.name}</span>
-                <span className="text-xs opacity-80 font-normal">Virtual Partner</span>
-            </div>
-        </div>
-        
-        <div className="flex items-center gap-3">
-             {/* Voice Call Button */}
-             <button 
-                onClick={startVoiceCall}
-                className="bg-white/20 hover:bg-white/30 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors backdrop-blur-md"
-                title="Start Voice Call"
-             >
-                 <i className="fas fa-phone-alt"></i>
-             </button>
+            <button onClick={() => handleQuickAction('hobbies')} className="flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#4C3322]/10 text-[10px] font-bold uppercase tracking-wider text-[#4C3322] hover:bg-[#8BAB70]/10 hover:border-[#8BAB70] hover:text-[#8BAB70] transition-colors flex items-center gap-1.5">
+              <i className="fas fa-puzzle-piece text-xs"></i> Hobbies
+            </button>
+            <button onClick={() => handleQuickAction('health')} className="flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#4C3322]/10 text-[10px] font-bold uppercase tracking-wider text-[#4C3322] hover:bg-[#8BAB70]/10 hover:border-[#8BAB70] hover:text-[#8BAB70] transition-colors flex items-center gap-1.5">
+              <i className="fas fa-heartbeat text-xs"></i> Wellness Check
+            </button>
+            <button onClick={() => handleQuickAction('advice')} className="flex-shrink-0 px-4 py-2 rounded-full bg-white border border-[#4C3322]/10 text-[10px] font-bold uppercase tracking-wider text-[#4C3322] hover:bg-[#8BAB70]/10 hover:border-[#8BAB70] hover:text-[#8BAB70] transition-colors flex items-center gap-1.5">
+              <i className="fas fa-comments text-xs"></i> Life Advice
+            </button>
+          </div>
 
-            {/* Relationship Meter */}
-            <div className="hidden md:flex items-center text-sm">
-                <div className="w-16 bg-black/20 rounded-full h-1.5 mr-2">
+          {/* Messages feed */}
+          <div className="flex-grow p-6 overflow-y-auto space-y-4 pr-3 custom-scrollbar scroll-smooth">
+            {virtualPartnerChatHistory.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                 {isInitializing ? (
+                   <div className="flex flex-col items-center gap-3">
+                     <LoadingSpinner />
+                     <span className="text-xs text-[#8BAB70] uppercase font-bold tracking-widest">Opening connection...</span>
+                   </div>
+                 ) : (
+                   <p className="text-xs font-semibold uppercase tracking-wider text-[#4C3322]/40">Start the mindfulness conversation with {virtualPartner.name}!</p>
+                 )}
+              </div>
+            ) : (
+              virtualPartnerChatHistory.map((message) => {
+                  if (!message.isVirtualPartner && message.text.includes("Say a warm, realistic welcome message")) return null;
+                  
+                  return (
                     <div
-                    className="bg-white h-1.5 rounded-full"
-                    style={{ width: `${virtualPartner.relationshipMeter}%` }}
-                    ></div>
-                </div>
-                <span className="text-xs font-bold">{virtualPartner.relationshipMeter}%</span>
-            </div>
-        </div>
-      </div>
-
-      {/* Quick Actions Bar */}
-      <div className="bg-gray-50 dark:bg-dark-mode-input-bg border-b border-gray-100 dark:border-gray-700 px-4 py-2 flex gap-2 overflow-x-auto no-scrollbar">
-          <button onClick={() => handleQuickAction('game')} className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-purple-700 transition-colors flex items-center gap-1">
-              <i className="fas fa-gamepad"></i> Play Game
-          </button>
-          <button onClick={() => handleQuickAction('hobbies')} className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-700 dark:text-gray-200 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-700 transition-colors flex items-center gap-1">
-              <i className="fas fa-puzzle-piece"></i> Hobbies
-          </button>
-          <button onClick={() => handleQuickAction('health')} className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-700 dark:text-gray-200 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 transition-colors flex items-center gap-1">
-              <i className="fas fa-heartbeat"></i> Wellness Check
-          </button>
-          <button onClick={() => handleQuickAction('advice')} className="flex-shrink-0 px-3 py-1.5 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs font-bold text-gray-700 dark:text-gray-200 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-700 transition-colors flex items-center gap-1">
-              <i className="fas fa-comments"></i> Family & Advice
-          </button>
-      </div>
-
-      <div className="flex flex-col-reverse md:flex-row-reverse flex-grow overflow-hidden">
-        {/* Right Sidebar for Gameplay Metrics (Hidden on mobile) */}
-        <div className="hidden md:block w-1/3 bg-light-background dark:bg-dark-mode-input-bg p-4 overflow-y-auto border-l border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <h3 className="text-lg font-semibold text-dark-text dark:text-dark-mode-text mb-3">Dynamics</h3>
-
-          {/* Current Scenario */}
-          <div className="bg-white dark:bg-dark-mode-card-bg p-3 rounded-lg shadow-sm mb-4">
-            <p className="font-semibold text-dark-text dark:text-dark-mode-text text-sm mb-1">Current Scenario:</p>
-            <p className="text-text-base dark:text-dark-mode-text-base text-xs italic">{virtualPartner.currentScenario || "No active scenario."}</p>
-          </div>
-
-          {/* Emotional State */}
-          <div className="mb-4">
-            <p className="font-semibold text-dark-text dark:text-dark-mode-text text-sm mb-2">Emotional State:</p>
-            <div className="space-y-2">
-              {['happiness', 'motivation', 'trust'].map((emotionKey) => {
-                const value = virtualPartner.emotionalState[emotionKey as keyof typeof virtualPartner.emotionalState];
-                return (
-                  <div key={emotionKey}>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-xs capitalize text-text-base dark:text-dark-mode-text-base">{emotionKey}:</span>
-                      <span className="text-xs font-semibold">{value}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                      <div
-                        className={`${getProgressBarColor(value)} h-1.5 rounded-full`}
-                        style={{ width: `${value}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Relationship Goals */}
-          <div>
-            <p className="font-semibold text-dark-text dark:text-dark-mode-text text-sm mb-2">Relationship Goals:</p>
-            <ul className="text-text-base dark:text-dark-mode-text-base text-xs space-y-1">
-              {virtualPartner.relationshipGoals.map((goal, index) => (
-                <li key={index} className="flex items-center">
-                  {goal.complete ? (
-                    <i className="fas fa-check-circle text-primary-teal dark:text-primary-teal-dark mr-2"></i>
-                  ) : (
-                    <i className="far fa-circle text-gray-400 dark:text-gray-500 mr-2"></i>
-                  )}
-                  <span className={goal.complete ? 'line-through text-gray-500 dark:text-dark-mode-text-base' : ''}>{goal.name}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Main Chat Window */}
-        <div className="flex-grow p-4 overflow-y-auto space-y-4">
-          {virtualPartnerChatHistory.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-gray-400">
-               {isInitializing ? <LoadingSpinner /> : <p>Start a conversation with {virtualPartner.name}!</p>}
-            </div>
-          ) : (
-            virtualPartnerChatHistory.map((message) => {
-                // Filter out the "system" prompt we used to trigger the welcome message if it exists in history but we don't want to show it
-                if (!message.isVirtualPartner && message.text.includes("Say a warm, realistic welcome message")) return null;
-                
-                return (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.isVirtualPartner ? 'justify-start' : 'justify-end'}`}
-                  >
-                    {message.isVirtualPartner && (
-                      <img
-                        src={virtualPartner.avatar}
-                        alt={virtualPartner.name}
-                        className="w-8 h-8 rounded-full mr-3 object-cover self-end"
-                      />
-                    )}
-                    <div
-                      className={`max-w-xs md:max-w-md p-3 rounded-xl shadow-sm ${
-                        message.isVirtualPartner
-                          ? 'bg-light-background dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text rounded-bl-none'
-                          : 'bg-accent-sky dark:bg-accent-sky-dark text-white rounded-br-none'
-                      }`}
+                      key={message.id}
+                      className={`flex ${message.isVirtualPartner ? 'justify-start' : 'justify-end'} animate-fade-in`}
                     >
-                      <p className="font-semibold text-sm mb-1">
-                        {message.isVirtualPartner ? virtualPartner.name : currentUser.name}
-                      </p>
-                      <p>{message.text}</p>
-                      <span className="block text-xs text-right opacity-75 mt-1">
-                        {message.text !== '...' ? new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                      </span>
+                      {message.isVirtualPartner && (
+                        <img
+                          src={virtualPartner.avatar}
+                          alt={virtualPartner.name}
+                          className="w-8 h-8 rounded-full mr-2 object-cover self-end border border-[#4C3322]/15 shadow-sm"
+                        />
+                      )}
+                      <div
+                        className={`max-w-xs md:max-w-md p-4 rounded-3xl text-sm leading-relaxed ${
+                          message.isVirtualPartner
+                            ? 'bg-[#FAF7F2]/60 border border-[#4C3322]/10 text-[#4C3322] rounded-bl-none shadow-sm'
+                            : 'bg-[#4C3322] text-[#FAF7F2] rounded-br-none shadow-md'
+                        }`}
+                      >
+                        <p className="text-[10px] font-bold uppercase tracking-wider mb-1 select-none opacity-50">
+                          {message.isVirtualPartner ? virtualPartner.name : currentUser.name.split(' ')[0]}
+                        </p>
+                        <p className="font-light">{message.text}</p>
+                        <span className="block text-[9px] text-right opacity-40 mt-1 select-none font-bold">
+                          {message.text !== '...' ? new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                        </span>
+                      </div>
+                      {!message.isVirtualPartner && (
+                        <img
+                          src={currentUser.avatar}
+                          alt={currentUser.name}
+                          className="w-8 h-8 rounded-full ml-2 object-cover self-end border border-[#4C3322]/15 shadow-sm"
+                        />
+                      )}
                     </div>
-                    {!message.isVirtualPartner && (
-                      <img
-                        src={currentUser.avatar}
-                        alt={currentUser.name}
-                        className="w-8 h-8 rounded-full ml-3 object-cover self-end"
-                      />
-                    )}
-                  </div>
-                );
-            })
+                  );
+              })
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {errorVirtualPartner && (
+            <div className="bg-[#DE7A49]/10 border border-[#DE7A49]/20 text-[#DE7A49] text-xs font-bold px-5 py-3 rounded-2xl mx-6 mb-3 shadow-inner flex items-center gap-2">
+              <i className="fas fa-exclamation-triangle"></i>
+              <span>{errorVirtualPartner}</span>
+            </div>
           )}
-          <div ref={messagesEndRef} />
-        </div>
+
+          {/* Form input field */}
+          <form onSubmit={handleSubmit} className="p-4 bg-[#FAF7F2]/40 border-t border-[#4C3322]/5 flex items-center gap-3">
+            <input
+              type="text"
+              value={inputText}
+              onChange={handleInputChange}
+              placeholder={`Message ${virtualPartner.name} guides...`}
+              className="flex-grow px-5 py-3.5 border border-[#4C3322]/10 rounded-full focus:outline-none focus:border-[#8BAB70] focus:bg-white bg-white text-sm text-[#4C3322] placeholder-[#4C3322]/40 shadow-inner transition-all"
+              disabled={isSendingMessage || isTyping}
+              aria-label={`Message ${virtualPartner.name}`}
+            />
+            <button
+              type="submit"
+              className="w-12 h-12 bg-[#4C3322] text-[#FAF7F2] rounded-full hover:bg-[#8BAB70] hover:scale-105 active:scale-95 flex items-center justify-center transition-all duration-300 shadow disabled:opacity-30 disabled:pointer-events-none cursor-pointer shrink-0"
+              disabled={!inputText.trim() || isSendingMessage || isTyping}
+            >
+              {isSendingMessage ? <LoadingSpinner /> : <i className="fas fa-paper-plane text-xs"></i>}
+            </button>
+          </form>
+        </main>
+
+        {/* GAMEPLAY DYNAMICS SIDEBAR (4 Cols - Hidden on mobile) */}
+        <aside className="lg:col-span-4 bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 shadow-sm flex flex-col justify-between hidden lg:flex select-none">
+          <div className="space-y-6">
+            <h3 className="font-serif text-lg font-black text-[#4C3322] border-b border-[#4C3322]/5 pb-3">Dynamics Index</h3>
+
+            {/* Current Scenario Context */}
+            <div className="bg-[#FAF7F2]/60 border border-[#4C3322]/10 p-4 rounded-3xl shadow-inner space-y-1">
+              <span className="text-[9px] font-bold text-[#4C3322]/40 uppercase tracking-wide">Current Context</span>
+              <p className="text-xs text-[#4C3322]/80 leading-relaxed font-light italic">
+                {virtualPartner.currentScenario || "Observing mindfulness breathing sessions."}
+              </p>
+            </div>
+
+            {/* Emotional indices */}
+            <div className="space-y-3.5">
+              <span className="text-[10px] font-bold text-[#4C3322]/40 uppercase tracking-wide ml-1 block">Emotional Indices</span>
+              <div className="space-y-3">
+                {['happiness', 'motivation', 'trust'].map((emotionKey) => {
+                  const value = virtualPartner.emotionalState[emotionKey as keyof typeof virtualPartner.emotionalState];
+                  return (
+                    <div key={emotionKey} className="space-y-1.5">
+                      <div className="flex justify-between items-center text-[10px] font-bold uppercase text-[#4C3322]/70">
+                        <span>{emotionKey}</span>
+                        <span>{value}%</span>
+                      </div>
+                      <div className="w-full bg-[#FAF7F2] border border-[#4C3322]/5 h-1.5 rounded-full overflow-hidden">
+                        <div
+                          className={`${getProgressBarColor(value)} h-full rounded-full transition-all duration-1000`}
+                          style={{ width: `${value}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Goals checklists */}
+            <div className="space-y-3 pt-2">
+              <span className="text-[10px] font-bold text-[#4C3322]/40 uppercase tracking-wide ml-1 block">Shared Goals Progress</span>
+              <ul className="text-xs text-[#4C3322] space-y-2">
+                {virtualPartner.relationshipGoals.map((goal, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    {goal.complete ? (
+                      <i className="fas fa-check-circle text-[#8BAB70] text-sm shrink-0"></i>
+                    ) : (
+                      <i className="far fa-circle text-[#4C3322]/20 text-sm shrink-0"></i>
+                    )}
+                    <span className={`truncate font-medium ${goal.complete ? 'line-through text-[#4C3322]/40' : 'text-[#4C3322]'}`}>{goal.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Quick dynamic tips box */}
+          <div className="bg-gradient-to-br from-[#4C3322] to-[#2E1F14] text-[#FAF7F2] rounded-3xl p-5 shadow-md relative overflow-hidden select-none">
+            <span className="text-[9px] tracking-[0.25em] font-bold text-[#8BAB70] uppercase">mindful guide</span>
+            <p className="text-[10px] font-light leading-relaxed italic opacity-85 mt-2">
+              Discussing exercises or checking in elevates the trust index, completing the goals checklist logs.
+            </p>
+          </div>
+        </aside>
+
       </div>
-      
-      {errorVirtualPartner && (
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded relative mx-4 mb-2" role="alert">
-          <strong className="font-bold">Chat Error:</strong>
-          <span className="block sm:inline ml-2">{errorVirtualPartner}</span>
-        </div>
-      )}
-      <form onSubmit={handleSubmit} className="p-4 bg-gray-100 dark:bg-dark-mode-input-bg border-t border-gray-200 dark:border-gray-700 flex items-center">
-        <input
-          type="text"
-          value={inputText}
-          onChange={handleInputChange}
-          placeholder={`Message ${virtualPartner.name}...`}
-          className="flex-grow p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-teal dark:focus:ring-primary-teal-dark bg-white dark:bg-dark-mode-input-bg text-dark-text dark:text-dark-mode-text"
-          disabled={isSendingMessage || isTyping}
-          aria-label={`Message ${virtualPartner.name}`}
-        />
-        <button
-          type="submit"
-          className="ml-4 bg-primary-teal dark:bg-primary-teal-dark text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-mint dark:hover:bg-secondary-mint-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!inputText.trim() || isSendingMessage || isTyping}
-        >
-          {isSendingMessage ? <LoadingSpinner /> : 'Send'}
-        </button>
-      </form>
     </div>
   );
 };
