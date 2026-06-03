@@ -18,7 +18,6 @@ export const CereenLandingPage: React.FC = () => {
   const [password, setPassword] = React.useState('');
   const [name, setName] = React.useState('');
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
-  const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
 
   // Auto-dismiss toast
   React.useEffect(() => {
@@ -113,95 +112,17 @@ export const CereenLandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Navigation Links - Perfect superscripted bracket styling */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium z-50">
-          
-          {/* Dropdown 1: Library */}
-          <div 
-            className="relative"
-            onMouseEnter={() => setActiveDropdown('library')}
-            onMouseLeave={() => setActiveDropdown(null)}
-          >
-            <button className={`hover:text-[#8BAB70] transition-colors flex items-center gap-1.5 cursor-pointer font-medium py-2 bg-transparent border-none ${activeDropdown === 'library' ? 'text-[#8BAB70]' : 'text-[#4C3322]'}`}>
-              Library
-              <i className={`fas fa-chevron-down text-[8px] transition-transform duration-300 ${activeDropdown === 'library' ? 'rotate-180' : ''}`}></i>
-            </button>
-            {activeDropdown === 'library' && (
-              <div className="absolute left-0 mt-1 w-48 bg-white border border-[#4C3322]/10 rounded-2xl shadow-xl py-2 z-50 animate-fade-in">
-                <a href="#articles" className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider">
-                  <span>Articles</span>
-                  <span className="text-[10px] text-[#4C3322]/50 font-light normal-case">(121)</span>
-                </a>
-                <a href="#podcast" className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider">
-                  <span>Podcast</span>
-                  <span className="text-[10px] text-[#4C3322]/50 font-light normal-case">[34]</span>
-                </a>
-                <a href="#radio-shows" className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider">
-                  <span>Radio Shows</span>
-                  <span className="text-[10px] text-[#4C3322]/50 font-light normal-case">[09]</span>
-                </a>
-              </div>
-            )}
-          </div>
-
-          {/* Dropdown 2: Sanctuary */}
-          <div 
-            className="relative"
-            onMouseEnter={() => setActiveDropdown('sanctuary')}
-            onMouseLeave={() => setActiveDropdown(null)}
-          >
-            <button className={`hover:text-[#8BAB70] transition-colors flex items-center gap-1.5 cursor-pointer font-medium py-2 bg-transparent border-none ${activeDropdown === 'sanctuary' ? 'text-[#8BAB70]' : 'text-[#4C3322]'}`}>
-              Sanctuary
-              <i className={`fas fa-chevron-down text-[8px] transition-transform duration-300 ${activeDropdown === 'sanctuary' ? 'rotate-180' : ''}`}></i>
-            </button>
-            {activeDropdown === 'sanctuary' && (
-              <div className="absolute left-0 mt-1 w-56 bg-white border border-[#4C3322]/10 rounded-2xl shadow-xl py-2 z-50 animate-fade-in">
-                <span 
-                  onClick={() => navigate('/circle')}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider cursor-pointer"
-                >
-                  <span>Sanctuary Feed</span>
-                  <span className="text-[9px] text-[#8BAB70] font-bold">LIVE</span>
-                </span>
-                <span 
-                  onClick={() => navigate('/connections')}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider cursor-pointer"
-                >
-                  <span>Connections Circle</span>
-                  <span className="text-[9px] text-[#8BAB70] font-bold">LIVE</span>
-                </span>
-                <span 
-                  onClick={() => navigate('/wellness')}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider cursor-pointer"
-                >
-                  <span>Wellness Sanctuary</span>
-                  <span className="text-[9px] text-[#8BAB70] font-bold">LIVE</span>
-                </span>
-                <span 
-                  onClick={() => navigate('/virtual-partner/create')}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider cursor-pointer"
-                >
-                  <span>Companion Guide</span>
-                  <span className="text-[9px] text-[#8BAB70] font-bold">LIVE</span>
-                </span>
-                <span 
-                  onClick={() => navigate('/marketplace')}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider cursor-pointer"
-                >
-                  <span>Marketplace Catalog</span>
-                  <span className="text-[9px] text-[#8BAB70] font-bold">LIVE</span>
-                </span>
-                <span 
-                  onClick={() => navigate('/travels')}
-                  className="flex items-center justify-between px-4 py-2 hover:bg-[#FAF7F2] text-xs font-bold text-[#4C3322] uppercase tracking-wider cursor-pointer"
-                >
-                  <span>Wanderlust Journey</span>
-                  <span className="text-[9px] text-[#8BAB70] font-bold">LIVE</span>
-                </span>
-              </div>
-            )}
-          </div>
-
+        {/* Navigation Links - Clean minimal magazine style */}
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="#articles" className="hover:text-[#8BAB70] transition-colors flex items-center gap-1">
+            Articles <span className="text-[11px] text-[#4C3322]/50 font-light">(121)</span>
+          </a>
+          <a href="#podcast" className="hover:text-[#8BAB70] transition-colors flex items-start">
+            Podcast <sup className="text-[9px] text-[#4C3322]/60 font-light ml-0.5">[34]</sup>
+          </a>
+          <a href="#radio-shows" className="hover:text-[#8BAB70] transition-colors flex items-start">
+            Radio Shows <sup className="text-[9px] text-[#4C3322]/60 font-light ml-0.5">[09]</sup>
+          </a>
           <a href="#talk-to-us" className="text-[#4C3322] border-b border-[#4C3322] pb-0.5 hover:text-[#8BAB70] hover:border-[#8BAB70] transition-all">
             Talk to us
           </a>
