@@ -1,14 +1,13 @@
-
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext, THEME_COLORS } from '../App';
 import { useNavigate } from 'react-router-dom';
-import { User, UserPreferences } from '../types';
+import { User } from '../types';
 import { LoadingSpinner } from './LoadingSpinner';
 import { LANGUAGES, CURRENCIES } from '../constants';
 
 // --- Sub-Components ---
 
-// Reusable Toggle Switch
+// Reusable Premium Toggle Switch
 const ToggleSwitch: React.FC<{
   label: string;
   description?: string;
@@ -16,21 +15,21 @@ const ToggleSwitch: React.FC<{
   onChange: () => void;
   disabled?: boolean;
 }> = ({ label, description, checked, onChange, disabled }) => (
-  <div className={`flex items-center justify-between py-4 border-b border-gray-100 dark:border-gray-700 last:border-0 ${disabled ? 'opacity-50' : ''}`}>
-    <div className="pr-4">
-      <h4 className="font-semibold text-gray-900 dark:text-white text-sm md:text-base">{label}</h4>
-      {description && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{description}</p>}
+  <div className={`flex items-center justify-between py-4 border-b border-[#4C3322]/10 last:border-0 ${disabled ? 'opacity-50' : ''}`}>
+    <div className="pr-4 select-none">
+      <h4 className="font-outfit font-bold text-[#4C3322] text-sm md:text-base">{label}</h4>
+      {description && <p className="text-xs text-[#4C3322]/60 mt-1 font-light leading-relaxed">{description}</p>}
     </div>
     <button
       onClick={onChange}
       disabled={disabled}
-      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-        checked ? 'bg-primary-teal' : 'bg-gray-200 dark:bg-gray-600'
+      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
+        checked ? 'bg-[#8BAB70]' : 'bg-[#4C3322]/20'
       }`}
     >
       <span
         aria-hidden="true"
-        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-300 ease-in-out ${
           checked ? 'translate-x-5' : 'translate-x-0'
         }`}
       />
@@ -38,7 +37,7 @@ const ToggleSwitch: React.FC<{
   </div>
 );
 
-// Reusable Input Field
+// Reusable Premium Input Field
 const InputField: React.FC<{
   label: string;
   value: string;
@@ -46,14 +45,14 @@ const InputField: React.FC<{
   onChange: (val: string) => void;
   disabled?: boolean;
 }> = ({ label, value, type = 'text', onChange, disabled = false }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">{label}</label>
+  <div className="mb-5">
+    <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-2">{label}</label>
     <input
       type={type}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
-      className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border border-gray-200 dark:border-gray-600 focus:outline-none focus:border-primary-teal text-gray-900 dark:text-white transition-all ${
+      className={`w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] focus:ring-1 focus:ring-[#8BAB70] text-[#4C3322] font-outfit text-sm transition-all duration-300 ${
         disabled ? 'opacity-60 cursor-not-allowed' : ''
       }`}
     />
@@ -65,6 +64,7 @@ const InputField: React.FC<{
 export const SettingsPage: React.FC = () => {
   const context = useContext(AppContext);
   const navigate = useNavigate();
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   if (!context) {
     throw new Error('AppContext must be used within an AppContext.Provider');
@@ -83,13 +83,13 @@ export const SettingsPage: React.FC = () => {
   const [email, setEmail] = useState(currentUser?.email || 'user@example.com'); 
   const [password, setPassword] = useState('');
   
-  // Preferences (Default values if not set)
+  // Preferences
   const [language, setLanguage] = useState(currentUser?.preferences?.language || 'English');
   const [currency, setCurrency] = useState(currentUser?.preferences?.currency || 'USD ($) - US Dollar');
   const [units, setUnits] = useState<'metric' | 'imperial'>(currentUser?.preferences?.units || 'metric');
   const [timezone, setTimezone] = useState(currentUser?.preferences?.timezone || 'UTC');
   
-  // Appearance (Local override for preview, committed on save or toggle)
+  // Appearance
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>(currentUser?.preferences?.fontSize || 'medium');
   const [reducedMotion, setReducedMotion] = useState(currentUser?.preferences?.reducedMotion || false);
 
@@ -123,11 +123,32 @@ export const SettingsPage: React.FC = () => {
       }
   }, [currentUser]);
 
+  const triggerToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 3000);
+  };
+
   if (!currentUser) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh]">
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">Please log in to manage your settings.</p>
-        <button onClick={() => navigate('/login')} className="bg-primary-teal text-white px-6 py-2 rounded-lg">Login</button>
+      <div className="min-h-screen bg-[#FAF7F2] text-[#4C3322] font-outfit flex flex-col items-center justify-center p-4">
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#8BAB70]/5 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#DE7A49]/5 blur-3xl pointer-events-none" />
+        
+        <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-8 md:p-12 shadow-sm text-center max-w-md w-full z-10 relative">
+          <div className="w-16 h-16 bg-[#DE7A49]/10 rounded-full flex items-center justify-center mx-auto mb-6 text-[#DE7A49] text-2xl">
+            <i className="fas fa-lock"></i>
+          </div>
+          <h2 className="text-3xl font-serif font-black mb-4">Sanctuary Lock</h2>
+          <p className="text-[#4C3322]/70 mb-8 font-light text-sm">
+            Please register or sign in to configure your wellness profile settings.
+          </p>
+          <button
+            onClick={() => navigate('/login')}
+            className="w-full bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] py-4 rounded-2xl font-bold text-xs uppercase tracking-wider shadow-md transition-colors cursor-pointer"
+          >
+            Login / Register
+          </button>
+        </div>
       </div>
     );
   }
@@ -150,7 +171,7 @@ export const SettingsPage: React.FC = () => {
             }
         };
         updateUserProfile(updatedUser);
-        alert("Settings saved successfully!");
+        triggerToast("Settings saved successfully!");
     }
   };
 
@@ -187,6 +208,7 @@ export const SettingsPage: React.FC = () => {
           }
           
           setIsSyncing(null);
+          triggerToast(`Connected to ${platform.charAt(0).toUpperCase() + platform.slice(1)}!`);
       }, 1500);
   };
 
@@ -205,6 +227,7 @@ export const SettingsPage: React.FC = () => {
           updatedUser.spotifyId = undefined;
       }
       updateUserProfile(updatedUser, { silent: true, skipRedirect: true });
+      triggerToast(`Disconnected ${platform.charAt(0).toUpperCase() + platform.slice(1)}`);
   };
 
   const handleInviteUser = (userId: string) => {
@@ -215,43 +238,66 @@ export const SettingsPage: React.FC = () => {
               users: foundFriends.users.filter(u => u.id !== userId)
           });
       }
+      triggerToast("Buddy invitation sent!");
   };
 
   const menuItems: { id: Tab; label: string; icon: string }[] = [
-    { id: 'account', label: 'Account', icon: 'fas fa-user-cog' },
-    { id: 'preferences', label: 'Preferences', icon: 'fas fa-sliders-h' },
     { id: 'appearance', label: 'Appearance', icon: 'fas fa-palette' },
+    { id: 'account', label: 'Account Profile', icon: 'fas fa-user-cog' },
+    { id: 'preferences', label: 'Preferences', icon: 'fas fa-sliders-h' },
     { id: 'notifications', label: 'Notifications', icon: 'fas fa-bell' },
     { id: 'integrations', label: 'Integrations', icon: 'fas fa-link' },
-    { id: 'privacy', label: 'Privacy', icon: 'fas fa-lock' },
-    { id: 'help', label: 'Help & Support', icon: 'fas fa-question-circle' },
+    { id: 'privacy', label: 'Privacy & Data', icon: 'fas fa-lock' },
+    { id: 'help', label: 'Help & Guides', icon: 'fas fa-question-circle' },
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-dark-mode-bg font-sans pb-20 pt-4 md:pt-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Settings</h1>
-            <span className="text-xs font-bold bg-primary-teal/10 text-primary-teal px-2 py-1 rounded-full uppercase tracking-wide border border-primary-teal/20">Control Center</span>
+    <div className="min-h-screen bg-[#FAF7F2] text-[#4C3322] font-outfit pb-24 pt-6 md:pt-10 px-4 md:px-8 relative overflow-hidden select-none">
+      
+      {/* Decorative Blurs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#8BAB70]/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#DE7A49]/5 blur-3xl pointer-events-none" />
+
+      {/* Floating Toast Notification */}
+      {toastMsg && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#4C3322] text-[#FAF7F2] px-6 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 animate-fade-in border border-[#FAF7F2]/10 text-sm font-semibold">
+          <i className="fas fa-check-circle text-[#8BAB70]"></i>
+          <span>{toastMsg}</span>
+        </div>
+      )}
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 pb-6 border-b border-[#4C3322]/10">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tight text-[#4C3322]">Sanctuary Control</h1>
+            <p className="text-[#4C3322]/60 mt-2 font-light text-sm md:text-base">Customize your wellness sanctuary experience and sync connections.</p>
+          </div>
+          <div className="self-start md:self-end">
+            <span className="text-[10px] font-bold bg-[#8BAB70]/10 text-[#8BAB70] px-4 py-2 rounded-full uppercase tracking-wider border border-[#8BAB70]/20">
+              System Settings
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           
           {/* Sidebar Navigation */}
-          <div className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-white dark:bg-dark-mode-card-bg rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden sticky top-24">
-              <nav className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible">
+          <div className="w-full lg:w-72 flex-shrink-0">
+            <div className="bg-white/80 backdrop-blur-md border border-[#4C3322]/10 rounded-[2.5rem] p-4 shadow-sm space-y-1.5 w-full">
+              <nav className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible no-scrollbar gap-2 lg:gap-1.5">
                 {menuItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`flex items-center px-6 py-4 text-sm font-medium transition-colors w-full whitespace-nowrap lg:whitespace-normal ${
+                    className={`flex items-center gap-3.5 px-5 py-4 text-sm font-bold transition-all duration-300 rounded-2xl whitespace-nowrap w-full cursor-pointer ${
                       activeTab === item.id
-                        ? 'bg-primary-teal/10 text-primary-teal border-b-2 lg:border-b-0 lg:border-l-4 border-primary-teal'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
+                        ? 'bg-[#4C3322] text-[#FAF7F2] shadow-sm'
+                        : 'text-[#4C3322]/70 hover:bg-[#4C3322]/5 hover:text-[#4C3322]'
                     }`}
                   >
-                    <i className={`${item.icon} w-6 text-lg ${activeTab === item.id ? 'text-primary-teal' : 'text-gray-400'}`}></i>
+                    <i className={`${item.icon} text-base w-5 text-center ${activeTab === item.id ? 'text-[#8BAB70]' : 'text-[#4C3322]/40'}`}></i>
                     {item.label}
                   </button>
                 ))}
@@ -260,97 +306,191 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           {/* Content Area */}
-          <div className="flex-grow">
-            <div className="bg-white dark:bg-dark-mode-card-bg rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 md:p-8 animate-fade-in min-h-[500px]">
+          <div className="flex-grow w-full">
+            <div className="bg-white/80 backdrop-blur-md border border-[#4C3322]/10 rounded-[2.5rem] p-8 md:p-10 shadow-sm min-h-[550px] transition-all duration-500">
               
+              {/* --- APPEARANCE TAB --- */}
+              {activeTab === 'appearance' && (
+                <div className="animate-fade-in space-y-8">
+                  <div>
+                    <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Visual Appearance</h2>
+                    <p className="text-xs text-[#4C3322]/60 font-light">Set interface themes, animations, and typography sizes.</p>
+                  </div>
+                  
+                  <div className="space-y-2 max-w-2xl">
+                     <ToggleSwitch 
+                        label="Dark Mode Support" 
+                        description="Toggle dark styling overrides (optimized for daytime cream values)."
+                        checked={isDarkMode} 
+                        onChange={toggleTheme} 
+                    />
+                    
+                    <ToggleSwitch 
+                        label="Reduced Animation Mode" 
+                        description="Minimize transitions and motion vectors for a serene browsing pace."
+                        checked={reducedMotion} 
+                        onChange={() => { setReducedMotion(!reducedMotion); handleAccountSave(); }} 
+                    />
+
+                    {/* App Theme Selector */}
+                    <div className="pt-8 border-t border-[#4C3322]/10">
+                      <h3 className="font-outfit font-bold text-[#4C3322] text-sm uppercase tracking-wider mb-4">Core Accents</h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        {Object.keys(THEME_COLORS).map((colorKey) => {
+                          const color = THEME_COLORS[colorKey];
+                          const isActive = themeColor === colorKey;
+                          return (
+                            <button
+                              key={colorKey}
+                              onClick={() => setThemeColor(colorKey)}
+                              className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                                isActive 
+                                  ? 'border-[#4C3322] bg-[#4C3322]/5 shadow-sm scale-[1.02]' 
+                                  : 'border-[#4C3322]/10 hover:border-[#4C3322]/30 hover:bg-[#4C3322]/5'
+                              }`}
+                            >
+                              <div 
+                                className="w-7 h-7 rounded-full shadow-inner border border-white flex-shrink-0"
+                                style={{ backgroundColor: color.primary }}
+                              ></div>
+                              <span className="text-xs font-bold capitalize text-[#4C3322]">{colorKey}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                    
+                    {/* Font Size Settings */}
+                    <div className="pt-8 border-t border-[#4C3322]/10">
+                        <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-3">Typography Scales</label>
+                        <div className="flex items-center gap-3 bg-[#FAF7F2] p-1.5 rounded-2xl border border-[#4C3322]/10">
+                            {['small', 'medium', 'large'].map((size) => (
+                              <button
+                                key={size}
+                                onClick={() => setFontSize(size as 'small' | 'medium' | 'large')}
+                                className={`flex-1 py-3.5 rounded-xl text-xs font-bold capitalize cursor-pointer transition-all duration-300 ${
+                                  fontSize === size 
+                                    ? 'bg-[#4C3322] text-[#FAF7F2] shadow-sm' 
+                                    : 'text-[#4C3322]/60 hover:text-[#4C3322]'
+                                }`}
+                              >
+                                {size} size
+                              </button>
+                            ))}
+                        </div>
+                    </div>
+                  </div>
+                  
+                  {/* Live Editorial Preview */}
+                  <div className="p-6 bg-[#FAF7F2] rounded-3xl border border-[#4C3322]/15 max-w-2xl">
+                      <p className="text-[10px] text-[#4C3322]/40 uppercase font-bold tracking-widest text-center mb-4">Typography & Accent Preview</p>
+                      <div className="flex flex-col items-center justify-center text-center">
+                          <div className="max-w-md">
+                              <h4 className="text-2xl font-serif font-black text-[#4C3322]">Elegant Editorial Header</h4>
+                              <p className={`text-[#4C3322]/70 mt-2 font-light leading-relaxed ${fontSize === 'small' ? 'text-xs' : fontSize === 'large' ? 'text-base' : 'text-sm'}`}>
+                                This is a simulation showing how body margins and typography scale relative to your configuration settings.
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              )}
+
               {/* --- ACCOUNT TAB --- */}
               {activeTab === 'account' && (
-                <div className="animate-fade-in">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Account Settings</h2>
+                <div className="animate-fade-in space-y-8">
+                  <div>
+                    <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Account settings</h2>
+                    <p className="text-xs text-[#4C3322]/60 font-light">Update display identity, credentials, and profile state.</p>
+                  </div>
                   
                   <div className="space-y-6 max-w-xl">
                     <InputField label="Display Name" value={name} onChange={setName} />
                     <InputField label="Email Address" value={email} onChange={setEmail} />
                     
-                    <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                         <h3 className="font-bold text-gray-900 dark:text-white mb-4">Change Password</h3>
+                    <div className="pt-6 border-t border-[#4C3322]/10">
+                         <h3 className="font-serif font-bold text-lg text-[#4C3322] mb-4">Change Security Credentials</h3>
                          <InputField label="New Password" value={password} onChange={setPassword} type="password" />
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 pt-4">
                         <button 
                             onClick={handleAccountSave}
-                            className="px-6 py-3 bg-primary-teal text-white font-bold rounded-xl shadow-lg hover:bg-secondary-mint transition-all"
+                            className="px-6 py-3.5 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] text-xs font-bold uppercase tracking-wider rounded-2xl shadow-md transition-colors cursor-pointer"
                         >
                             Save Changes
                         </button>
                         <button 
                              onClick={() => navigate('/edit-profile')}
-                             className="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                             className="px-6 py-3.5 border border-[#4C3322]/20 text-[#4C3322] hover:bg-[#4C3322]/5 text-xs font-bold uppercase tracking-wider rounded-2xl transition-colors cursor-pointer"
                         >
                              Edit Public Profile
                         </button>
                     </div>
 
-                    <div className="pt-8 mt-8 border-t border-gray-100 dark:border-gray-700">
-                        <h3 className="text-red-500 font-bold mb-2">Danger Zone</h3>
-                        <p className="text-sm text-gray-500 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
-                        <button className="text-red-500 border border-red-200 bg-red-50 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-100 transition-colors">
-                            Delete Account
+                    <div className="pt-8 mt-8 border-t border-red-500/10">
+                        <h3 className="text-red-600 font-serif font-bold text-lg mb-2">Danger Zone</h3>
+                        <p className="text-xs text-[#4C3322]/60 mb-4">Once you delete your account, all companion connections and profile logs will be permanently erased.</p>
+                        <button className="text-red-600 border border-red-500/20 bg-red-500/5 hover:bg-red-600 hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer">
+                            Delete Sanctuary Account
                         </button>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* --- PREFERENCES TAB (NEW) --- */}
+              {/* --- PREFERENCES TAB --- */}
               {activeTab === 'preferences' && (
-                  <div className="animate-fade-in">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Global Preferences</h2>
+                  <div className="animate-fade-in space-y-8">
+                      <div>
+                        <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Global Preferences</h2>
+                        <p className="text-xs text-[#4C3322]/60 font-light">Set localized parameters for language, timezones, and measurements.</p>
+                      </div>
+                      
                       <div className="space-y-6 max-w-xl">
                           <div>
-                              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Language</label>
+                              <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-2">Language</label>
                               <select 
                                   value={language} 
                                   onChange={(e) => setLanguage(e.target.value)} 
-                                  className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border border-gray-200 dark:border-gray-600 focus:outline-none focus:border-primary-teal text-gray-900 dark:text-white"
+                                  className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] focus:ring-1 focus:ring-[#8BAB70] text-[#4C3322] font-outfit text-sm cursor-pointer transition-all duration-300"
                               >
                                   <option value="">Select Language</option>
                                   {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
                               </select>
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Currency</label>
+                                  <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-2">Currency</label>
                                   <select 
                                       value={currency} 
                                       onChange={(e) => setCurrency(e.target.value)} 
-                                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border border-gray-200 dark:border-gray-600 focus:outline-none focus:border-primary-teal text-gray-900 dark:text-white"
+                                      className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-[#4C3322] font-outfit text-sm cursor-pointer transition-all duration-300"
                                   >
                                       <option value="">Select Currency</option>
                                       {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
                                   </select>
                               </div>
                               <div>
-                                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Units</label>
+                                  <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-2">Units System</label>
                                   <select 
                                       value={units} 
                                       onChange={(e) => setUnits(e.target.value as 'metric' | 'imperial')} 
-                                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border border-gray-200 dark:border-gray-600 focus:outline-none focus:border-primary-teal text-gray-900 dark:text-white"
+                                      className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-[#4C3322] font-outfit text-sm cursor-pointer transition-all duration-300"
                                   >
-                                      <option value="metric">Metric (km, kg)</option>
-                                      <option value="imperial">Imperial (mi, lbs)</option>
+                                      <option value="metric">Metric (km, kg, celsius)</option>
+                                      <option value="imperial">Imperial (mi, lbs, fahrenheit)</option>
                                   </select>
                               </div>
                           </div>
 
                           <div>
-                              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Timezone</label>
+                              <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-2">Default Timezone</label>
                               <select 
                                   value={timezone} 
                                   onChange={(e) => setTimezone(e.target.value)} 
-                                  className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border border-gray-200 dark:border-gray-600 focus:outline-none focus:border-primary-teal text-gray-900 dark:text-white"
+                                  className="w-full px-5 py-3.5 rounded-2xl bg-[#FAF7F2] border border-[#4C3322]/15 focus:outline-none focus:border-[#8BAB70] text-[#4C3322] font-outfit text-sm cursor-pointer transition-all duration-300"
                               >
                                   <option>UTC</option>
                                   <option>PST (Pacific Standard)</option>
@@ -363,7 +503,7 @@ export const SettingsPage: React.FC = () => {
                           <div className="pt-4">
                               <button 
                                   onClick={handleAccountSave}
-                                  className="px-6 py-3 bg-primary-teal text-white font-bold rounded-xl shadow-lg hover:bg-secondary-mint transition-all"
+                                  className="px-6 py-3.5 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] text-xs font-bold uppercase tracking-wider rounded-2xl shadow-md transition-colors cursor-pointer"
                               >
                                   Save Preferences
                               </button>
@@ -374,30 +514,33 @@ export const SettingsPage: React.FC = () => {
 
               {/* --- NOTIFICATIONS TAB --- */}
               {activeTab === 'notifications' && (
-                <div className="animate-fade-in">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Notification Preferences</h2>
+                <div className="animate-fade-in space-y-8">
+                  <div>
+                    <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Notification Controls</h2>
+                    <p className="text-xs text-[#4C3322]/60 font-light">Choose which updates and alerts you wish to receive.</p>
+                  </div>
                   <div className="space-y-2 max-w-2xl">
                     <ToggleSwitch 
-                        label="Email Notifications" 
-                        description="Receive digests and important updates via email."
+                        label="Email Updates" 
+                        description="Receive digests, system updates, and journal recaps via email."
                         checked={notifEmail} 
                         onChange={() => setNotifEmail(!notifEmail)} 
                     />
                     <ToggleSwitch 
-                        label="Push Notifications" 
-                        description="Get real-time alerts on your device."
+                        label="Push Alert Notifications" 
+                        description="Get real-time device screen banners when events match."
                         checked={notifPush} 
                         onChange={() => setNotifPush(!notifPush)} 
                     />
                      <ToggleSwitch 
-                        label="Friend Requests" 
-                        description="Notify me when someone sends a friend request."
+                        label="Buddy Connection Alerts" 
+                        description="Notify me instantly when another traveler links or requests alignment."
                         checked={notifFriendReq} 
                         onChange={() => setNotifFriendReq(!notifFriendReq)} 
                     />
                     <ToggleSwitch 
-                        label="Marketing & Tips" 
-                        description="Receive wellness tips and promotional offers."
+                        label="Daily Sanctuary Tips" 
+                        description="Get morning quotes and weekly wellness report cards."
                         checked={notifMarketing} 
                         onChange={() => setNotifMarketing(!notifMarketing)} 
                     />
@@ -407,28 +550,31 @@ export const SettingsPage: React.FC = () => {
 
               {/* --- PRIVACY TAB --- */}
               {activeTab === 'privacy' && (
-                <div className="animate-fade-in">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Privacy & Security</h2>
+                <div className="animate-fade-in space-y-8">
+                  <div>
+                    <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Privacy & Security</h2>
+                    <p className="text-xs text-[#4C3322]/60 font-light">Protect your visibility settings and control shared metric data.</p>
+                  </div>
                   
-                  <div className="mb-8">
-                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Profile Visibility</label>
+                  <div className="mb-6">
+                     <label className="block text-xs font-bold text-[#4C3322] uppercase tracking-wider mb-3">Sanctuary Profile Visibility</label>
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {['public', 'friends', 'private'].map((option) => (
                              <div 
                                 key={option}
                                 onClick={() => setProfileVisibility(option)}
-                                className={`cursor-pointer rounded-xl border p-4 flex flex-col items-center justify-center text-center transition-all ${
+                                className={`cursor-pointer rounded-2xl border p-5 flex flex-col items-center justify-center text-center transition-all duration-300 ${
                                     profileVisibility === option 
-                                    ? 'border-primary-teal bg-primary-teal/5 ring-1 ring-primary-teal' 
-                                    : 'border-gray-200 dark:border-gray-700 hover:border-primary-teal/50'
+                                    ? 'border-[#4C3322] bg-[#4C3322]/5 shadow-sm' 
+                                    : 'border-[#4C3322]/10 hover:border-[#4C3322]/30 hover:bg-[#4C3322]/5'
                                 }`}
                              >
-                                <div className={`w-4 h-4 rounded-full border mb-2 flex items-center justify-center ${
-                                     profileVisibility === option ? 'border-primary-teal' : 'border-gray-400'
+                                <div className={`w-4 h-4 rounded-full border mb-3 flex items-center justify-center transition-colors ${
+                                     profileVisibility === option ? 'border-[#4C3322]' : 'border-[#4C3322]/30'
                                 }`}>
-                                    {profileVisibility === option && <div className="w-2 h-2 rounded-full bg-primary-teal"></div>}
+                                    {profileVisibility === option && <div className="w-2.5 h-2.5 rounded-full bg-[#8BAB70]"></div>}
                                 </div>
-                                <span className="capitalize font-semibold text-gray-900 dark:text-white">{option}</span>
+                                <span className="capitalize font-bold text-sm text-[#4C3322]">{option}</span>
                              </div>
                         ))}
                      </div>
@@ -436,113 +582,43 @@ export const SettingsPage: React.FC = () => {
 
                   <div className="space-y-2 max-w-2xl">
                      <ToggleSwitch 
-                        label="Share Usage Data" 
-                        description="Allow Welldone to use your activity for matchmaking improvements."
+                        label="Share Usage Metrics" 
+                        description="Allow anonymous wellness score tracking to optimize matching systems."
                         checked={dataSharing} 
                         onChange={() => setDataSharing(!dataSharing)} 
                     />
                   </div>
                   
-                  <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
-                      <h3 className="font-bold text-gray-900 dark:text-white mb-4">Blocked Users</h3>
-                      <p className="text-sm text-gray-500 mb-4">Manage the list of people you have blocked.</p>
-                      <button className="text-sm font-bold text-primary-teal border border-primary-teal px-4 py-2 rounded-lg hover:bg-primary-teal hover:text-white transition-colors">
-                          Manage Block List
+                  <div className="mt-8 pt-8 border-t border-[#4C3322]/10">
+                      <h3 className="font-serif font-bold text-lg text-[#4C3322] mb-2">Blocked Profiles</h3>
+                      <p className="text-xs text-[#4C3322]/60 mb-4">Manage profiles restricted from searching or messaging your sanctuary feed.</p>
+                      <button className="text-xs font-bold text-[#4C3322] border border-[#4C3322]/20 px-5 py-2.5 rounded-xl hover:bg-[#4C3322] hover:text-[#FAF7F2] transition-all cursor-pointer">
+                          Manage Restriction List
                       </button>
-                  </div>
-                </div>
-              )}
-
-              {/* --- APPEARANCE TAB --- */}
-              {activeTab === 'appearance' && (
-                <div className="animate-fade-in">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Appearance</h2>
-                  <div className="space-y-6 max-w-2xl">
-                     <ToggleSwitch 
-                        label="Dark Mode" 
-                        description="Switch between light and dark themes."
-                        checked={isDarkMode} 
-                        onChange={toggleTheme} 
-                    />
-                    
-                    <ToggleSwitch 
-                        label="Reduced Motion" 
-                        description="Minimize animations for a calmer experience."
-                        checked={reducedMotion} 
-                        onChange={() => { setReducedMotion(!reducedMotion); handleAccountSave(); }} 
-                    />
-
-                    <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                      <h3 className="font-bold text-gray-900 dark:text-white mb-4">Select App Theme</h3>
-                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
-                        {Object.keys(THEME_COLORS).map((colorKey) => {
-                          const color = THEME_COLORS[colorKey];
-                          return (
-                            <button
-                              key={colorKey}
-                              onClick={() => setThemeColor(colorKey)}
-                              className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
-                                themeColor === colorKey 
-                                  ? 'border-gray-400 bg-gray-50 dark:bg-gray-800 shadow-sm scale-105 ring-2 ring-offset-2 ring-gray-300 dark:ring-gray-600' 
-                                  : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800'
-                              }`}
-                            >
-                              <div 
-                                className="w-12 h-12 rounded-full shadow-md border-2 border-white dark:border-gray-700"
-                                style={{ backgroundColor: color.primary }}
-                              ></div>
-                              <span className="text-xs font-bold capitalize text-gray-600 dark:text-gray-300">{colorKey}</span>
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                    
-                    <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Font Size</label>
-                        <div className="flex items-center gap-4 bg-gray-50 dark:bg-dark-mode-input-bg p-2 rounded-xl border border-gray-200 dark:border-gray-600">
-                            <button onClick={() => setFontSize('small')} className={`flex-1 py-2 rounded-lg text-xs font-bold ${fontSize === 'small' ? 'bg-white dark:bg-dark-mode-card-bg shadow-sm text-primary-teal' : 'text-gray-500'}`}>Aa Small</button>
-                            <button onClick={() => setFontSize('medium')} className={`flex-1 py-2 rounded-lg text-sm font-bold ${fontSize === 'medium' ? 'bg-white dark:bg-dark-mode-card-bg shadow-sm text-primary-teal' : 'text-gray-500'}`}>Aa Medium</button>
-                            <button onClick={() => setFontSize('large')} className={`flex-1 py-2 rounded-lg text-lg font-bold ${fontSize === 'large' ? 'bg-white dark:bg-dark-mode-card-bg shadow-sm text-primary-teal' : 'text-gray-500'}`}>Aa Large</button>
-                        </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-10 p-6 bg-gray-50 dark:bg-dark-mode-input-bg rounded-xl border border-gray-100 dark:border-gray-700">
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 uppercase font-bold tracking-widest text-center">Live Preview</p>
-                      <div className="flex flex-col items-center justify-center gap-6">
-                          <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-full bg-primary-teal flex items-center justify-center text-white shadow-lg animate-pulse">
-                                  <i className="fas fa-check"></i>
-                              </div>
-                              <div className="bg-white dark:bg-dark-mode-card-bg p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                  <p className={`text-primary-teal font-bold ${fontSize === 'small' ? 'text-sm' : fontSize === 'large' ? 'text-lg' : 'text-base'}`}>Primary Color</p>
-                                  <p className="text-gray-500 dark:text-gray-400 text-sm">Theming applied instantly.</p>
-                              </div>
-                          </div>
-                      </div>
                   </div>
                 </div>
               )}
 
               {/* --- INTEGRATIONS TAB --- */}
               {activeTab === 'integrations' && (
-                 <div className="animate-fade-in">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Connected Accounts</h2>
-                    <p className="text-gray-500 dark:text-gray-400 mb-8">Sync your social world to find more connections and enhance your Cosmic Match data.</p>
+                 <div className="animate-fade-in space-y-8">
+                    <div>
+                      <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Connected Networks</h2>
+                      <p className="text-xs text-[#4C3322]/60 font-light">Link platforms to verify alignments and discover companions.</p>
+                    </div>
 
-                    <div className="space-y-6 max-w-2xl">
+                    <div className="space-y-5 max-w-2xl">
                         
-                        {/* Facebook Integration */}
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm transition-all hover:shadow-md">
-                            <div className="flex items-center justify-between p-4 bg-white dark:bg-dark-mode-card-bg">
+                        {/* Facebook */}
+                        <div className="border border-[#4C3322]/10 rounded-3xl overflow-hidden shadow-sm transition-all bg-white">
+                            <div className="flex items-center justify-between p-5">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl shadow-md">
+                                    <div className="w-12 h-12 rounded-full bg-[#1877F2]/10 text-[#1877F2] flex items-center justify-center text-xl">
                                         <i className="fab fa-facebook-f"></i>
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900 dark:text-white text-lg">Facebook</h4>
-                                        <p className="text-xs text-gray-500">{fbConnected ? 'Connected' : 'Sync friends & events'}</p>
+                                        <h4 className="font-bold text-[#4C3322] text-base">Facebook</h4>
+                                        <p className="text-xs text-[#4C3322]/60 font-light">{fbConnected ? 'Synchronized' : 'Find friends nearby'}</p>
                                     </div>
                                 </div>
                                 {isSyncing === 'facebook' ? (
@@ -550,10 +626,10 @@ export const SettingsPage: React.FC = () => {
                                 ) : (
                                     <button 
                                         onClick={() => fbConnected ? handleDisconnect('facebook') : handleConnectSocial('facebook')}
-                                        className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${
+                                        className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                                             fbConnected 
-                                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300' 
-                                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
+                                            ? 'bg-[#4C3322]/10 text-[#4C3322] hover:bg-[#4C3322]/20' 
+                                            : 'bg-[#4C3322] text-[#FAF7F2] hover:bg-[#8BAB70]'
                                         }`}
                                     >
                                         {fbConnected ? 'Disconnect' : 'Connect'}
@@ -561,25 +637,25 @@ export const SettingsPage: React.FC = () => {
                                 )}
                             </div>
                             
-                            {/* Found Friends - Facebook */}
+                            {/* Found Friends */}
                             {fbConnected && foundFriends?.source === 'facebook' && foundFriends.users.length > 0 && (
-                                <div className="bg-gray-50 dark:bg-dark-mode-input-bg p-4 border-t border-gray-200 dark:border-gray-700 animate-fade-in">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Found {foundFriends.users.length} Friends on Welldone</p>
-                                        <button onClick={() => setFoundFriends(null)} className="text-xs text-gray-400 hover:text-gray-600"><i className="fas fa-times"></i></button>
+                                <div className="bg-[#FAF7F2] p-5 border-t border-[#4C3322]/10 animate-fade-in space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest">Suggested Companions on Welldone</p>
+                                        <button onClick={() => setFoundFriends(null)} className="text-xs text-[#4C3322]/40 hover:text-[#4C3322]"><i className="fas fa-times"></i></button>
                                     </div>
-                                    <div className="space-y-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {foundFriends.users.map(user => (
-                                            <div key={user.id} className="flex items-center justify-between bg-white dark:bg-dark-mode-card-bg p-2 rounded-lg border border-gray-100 dark:border-gray-700">
+                                            <div key={user.id} className="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-[#4C3322]/10 shadow-sm">
                                                 <div className="flex items-center gap-3">
-                                                    <img src={user.avatar} className="w-8 h-8 rounded-full object-cover" alt="" />
-                                                    <span className="text-sm font-bold text-gray-800 dark:text-gray-200">{user.name}</span>
+                                                    <img src={user.avatar} className="w-8 h-8 rounded-full object-cover border border-[#4C3322]/10" alt="" />
+                                                    <span className="text-xs font-bold text-[#4C3322]">{user.name}</span>
                                                 </div>
                                                 <button 
                                                     onClick={() => handleInviteUser(user.id)}
-                                                    className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 px-3 py-1.5 rounded-md transition-colors font-bold"
+                                                    className="text-[10px] bg-[#8BAB70] text-white hover:bg-[#4C3322] px-3.5 py-2 rounded-xl transition-colors font-bold uppercase tracking-wider cursor-pointer"
                                                 >
-                                                    Add Friend
+                                                    Link Up
                                                 </button>
                                             </div>
                                         ))}
@@ -588,16 +664,16 @@ export const SettingsPage: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Instagram Integration */}
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm transition-all hover:shadow-md">
-                            <div className="flex items-center justify-between p-4 bg-white dark:bg-dark-mode-card-bg">
+                        {/* Instagram */}
+                        <div className="border border-[#4C3322]/10 rounded-3xl overflow-hidden shadow-sm transition-all bg-white">
+                            <div className="flex items-center justify-between p-5">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 flex items-center justify-center text-white text-xl shadow-md">
+                                    <div className="w-12 h-12 rounded-full bg-[#E1306C]/10 text-[#E1306C] flex items-center justify-center text-xl">
                                         <i className="fab fa-instagram"></i>
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900 dark:text-white text-lg">Instagram</h4>
-                                        <p className="text-xs text-gray-500">{instaConnected ? 'Connected' : 'Import photos & bio data'}</p>
+                                        <h4 className="font-bold text-[#4C3322] text-base">Instagram</h4>
+                                        <p className="text-xs text-[#4C3322]/60 font-light">{instaConnected ? 'Synchronized' : 'Sync bio & media feed'}</p>
                                     </div>
                                 </div>
                                 {isSyncing === 'instagram' ? (
@@ -605,10 +681,10 @@ export const SettingsPage: React.FC = () => {
                                 ) : (
                                     <button 
                                         onClick={() => instaConnected ? handleDisconnect('instagram') : handleConnectSocial('instagram')}
-                                        className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${
+                                        className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                                             instaConnected 
-                                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300' 
-                                            : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:opacity-90 shadow-md'
+                                            ? 'bg-[#4C3322]/10 text-[#4C3322] hover:bg-[#4C3322]/20' 
+                                            : 'bg-[#4C3322] text-[#FAF7F2] hover:bg-[#8BAB70]'
                                         }`}
                                     >
                                         {instaConnected ? 'Disconnect' : 'Connect'}
@@ -617,16 +693,16 @@ export const SettingsPage: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Spotify Integration */}
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm transition-all hover:shadow-md">
-                            <div className="flex items-center justify-between p-4 bg-white dark:bg-dark-mode-card-bg">
+                        {/* Spotify */}
+                        <div className="border border-[#4C3322]/10 rounded-3xl overflow-hidden shadow-sm transition-all bg-white">
+                            <div className="flex items-center justify-between p-5">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl shadow-md">
+                                    <div className="w-12 h-12 rounded-full bg-[#1DB954]/10 text-[#1DB954] flex items-center justify-center text-xl">
                                         <i className="fab fa-spotify"></i>
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-gray-900 dark:text-white text-lg">Spotify</h4>
-                                        <p className="text-xs text-gray-500">{spotifyConnected ? 'Connected' : 'Match based on music taste'}</p>
+                                        <h4 className="font-bold text-[#4C3322] text-base">Spotify</h4>
+                                        <p className="text-xs text-[#4C3322]/60 font-light">{spotifyConnected ? 'Synchronized' : 'Analyze music frequencies'}</p>
                                     </div>
                                 </div>
                                 {isSyncing === 'spotify' ? (
@@ -634,10 +710,10 @@ export const SettingsPage: React.FC = () => {
                                 ) : (
                                     <button 
                                         onClick={() => spotifyConnected ? handleDisconnect('spotify') : handleConnectSocial('spotify')}
-                                        className={`px-5 py-2 rounded-lg text-sm font-bold transition-colors ${
+                                        className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                                             spotifyConnected 
-                                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300' 
-                                            : 'bg-green-600 text-white hover:bg-green-700 shadow-md'
+                                            ? 'bg-[#4C3322]/10 text-[#4C3322] hover:bg-[#4C3322]/20' 
+                                            : 'bg-[#4C3322] text-[#FAF7F2] hover:bg-[#8BAB70]'
                                         }`}
                                     >
                                         {spotifyConnected ? 'Disconnect' : 'Connect'}
@@ -652,25 +728,29 @@ export const SettingsPage: React.FC = () => {
 
               {/* --- HELP TAB --- */}
               {activeTab === 'help' && (
-                  <div className="animate-fade-in">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Help & Support</h2>
+                  <div className="animate-fade-in space-y-8">
+                      <div>
+                        <h2 className="text-2xl font-serif font-bold text-[#4C3322] mb-1">Help & Support Guides</h2>
+                        <p className="text-xs text-[#4C3322]/60 font-light">Read frequently asked guides or notify the advisory desk.</p>
+                      </div>
+                      
                       <div className="space-y-4 max-w-2xl">
-                          <div className="bg-gray-50 dark:bg-dark-mode-input-bg p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                              <h4 className="font-bold text-gray-800 dark:text-white mb-1">FAQs</h4>
-                              <p className="text-sm text-gray-500">Common questions about connecting and travel.</p>
+                          <div className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300">
+                              <h4 className="font-bold text-[#4C3322] mb-1 text-sm">Frequently Asked Questions</h4>
+                              <p className="text-xs text-[#4C3322]/60 font-light">Quick guides regarding companion alignment metrics and retreats.</p>
                           </div>
-                          <div className="bg-gray-50 dark:bg-dark-mode-input-bg p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                              <h4 className="font-bold text-gray-800 dark:text-white mb-1">Contact Support</h4>
-                              <p className="text-sm text-gray-500">Need help with your account?</p>
+                          <div className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300">
+                              <h4 className="font-bold text-[#4C3322] mb-1 text-sm">Direct Sanctuary Advisory Support</h4>
+                              <p className="text-xs text-[#4C3322]/60 font-light">Connect with our support team regarding account verification logs.</p>
                           </div>
-                          <div className="bg-gray-50 dark:bg-dark-mode-input-bg p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                              <h4 className="font-bold text-gray-800 dark:text-white mb-1">Report a Bug</h4>
-                              <p className="text-sm text-gray-500">Help us improve Welldone.</p>
+                          <div className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300">
+                              <h4 className="font-bold text-[#4C3322] mb-1 text-sm">Report Interface Glitches</h4>
+                              <p className="text-xs text-[#4C3322]/60 font-light">Report issues to help improve sanctuary layout parameters.</p>
                           </div>
                           
-                          <div className="mt-8 text-center text-xs text-gray-400">
-                              <p>Welldone Version 2.5.0</p>
-                              <p>&copy; 2024 Welldone Inc.</p>
+                          <div className="mt-10 pt-6 border-t border-[#4C3322]/10 text-center text-xs text-[#4C3322]/40 font-light">
+                              <p className="font-semibold text-xs mb-1 text-[#4C3322]/60">Welldone Sanctuary Edition 2.5.0</p>
+                              <p>&copy; 2026 Welldone Inc. All Rights Reserved.</p>
                           </div>
                       </div>
                   </div>
