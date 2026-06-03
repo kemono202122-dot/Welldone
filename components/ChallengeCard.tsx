@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Challenge } from '../types';
 
@@ -13,54 +12,62 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onJoin,
   return (
     <div 
       onClick={onClick}
-      className={`bg-white dark:bg-dark-mode-card-bg rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full ${onClick ? 'cursor-pointer transform hover:-translate-y-1 group' : ''}`}
+      className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col h-full cursor-pointer transform hover:-translate-y-1 group relative select-none"
     >
       <div className="relative h-48 overflow-hidden">
         <img
           src={challenge.image}
           alt={challenge.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
-            <span className="text-xs font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md px-2 py-1 rounded-lg">View Details</span>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#4C3322]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute bottom-4 left-4 text-[#FAF7F2] opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <span className="text-[9px] font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+            View Details
+          </span>
         </div>
       </div>
       
-      <div className="p-5 flex flex-col flex-grow">
-        <div className="flex justify-between items-start mb-2">
-            <h3 className="text-xl font-bold text-dark-text dark:text-dark-mode-text leading-tight">{challenge.name}</h3>
-            {isJoined && (
-                <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Joined</span>
-            )}
+      <div className="p-6 flex flex-col flex-grow">
+        <div className="flex justify-between items-start mb-3 gap-2">
+          <h3 className="font-serif text-lg font-black text-[#4C3322] leading-snug group-hover:text-[#8BAB70] transition-colors line-clamp-2">
+            {challenge.name}
+          </h3>
+          {isJoined && (
+            <span className="bg-[#8BAB70]/15 text-[#8BAB70] border border-[#8BAB70]/20 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0">
+              Joined
+            </span>
+          )}
         </div>
         
-        <p className="text-text-base dark:text-dark-mode-text-base text-sm mb-4 line-clamp-2">{challenge.description}</p>
+        <p className="text-[#4C3322]/70 text-xs font-light mb-6 line-clamp-2 leading-relaxed">
+          {challenge.description}
+        </p>
         
         <div className="mt-auto">
-            <div className="flex justify-between items-center mb-4 text-xs font-medium text-gray-500 dark:text-gray-400">
-            <span className="flex items-center gap-1 text-primary-teal dark:text-primary-teal-dark">
-                <i className="fas fa-trophy"></i> {challenge.reward}
+          <div className="flex justify-between items-center mb-4 text-[10px] font-bold uppercase tracking-wider text-[#4C3322]/50">
+            <span className="flex items-center gap-1.5 text-[#8BAB70]">
+              <i className="fas fa-trophy text-xs"></i> {challenge.reward}
             </span>
-            <span className="flex items-center gap-1">
-                <i className="fas fa-users"></i> {challenge.participants.length}
+            <span className="flex items-center gap-1.5 text-[#4C3322]/50">
+              <i className="fas fa-users text-xs"></i> {challenge.participants.length} Joined
             </span>
-            </div>
-            
-            <button
+          </div>
+          
+          <button
             onClick={(e) => {
-                e.stopPropagation(); // Prevent opening the modal when clicking the button
-                if (!isJoined) onJoin(challenge.id);
+              e.stopPropagation(); // Prevent opening the modal when clicking the button
+              if (!isJoined) onJoin(challenge.id);
             }}
-            className={`w-full px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm ${
-                isJoined 
-                ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-default' 
-                : 'bg-accent-sky dark:bg-accent-sky-dark text-white hover:bg-blue-600 dark:hover:bg-accent-sky shadow-md hover:shadow-lg'
+            className={`w-full py-3 rounded-2xl font-bold text-xs uppercase tracking-wider transition-colors shadow-sm ${
+              isJoined 
+                ? 'bg-[#8BAB70]/10 border border-[#8BAB70]/20 text-[#8BAB70] cursor-default' 
+                : 'bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] hover:shadow'
             }`}
             disabled={isJoined}
-            >
+          >
             {isJoined ? 'Active Challenge' : 'Join Now'}
-            </button>
+          </button>
         </div>
       </div>
     </div>

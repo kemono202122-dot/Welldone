@@ -401,7 +401,15 @@ export const CereenDashboardPage: React.FC = () => {
             className="w-full text-left px-4 py-3 rounded-full flex items-center gap-3 text-sm font-semibold transition-all duration-300 hover:bg-[#8BAB70]/15 hover:text-[#8BAB70] text-[#4C3322]"
           >
             <i className="fas fa-users text-xs"></i>
-            <span className="whitespace-nowrap font-bold">Sanctuary Circle</span>
+            <span className="whitespace-nowrap font-bold">Sanctuary Feed</span>
+          </button>
+
+          <button 
+            onClick={() => navigate('/connections')}
+            className="w-full text-left px-4 py-3 rounded-full flex items-center gap-3 text-sm font-semibold transition-all duration-300 hover:bg-[#8BAB70]/15 hover:text-[#8BAB70] text-[#4C3322]"
+          >
+            <i className="fas fa-user-friends text-xs"></i>
+            <span className="whitespace-nowrap font-bold">Connections Circle</span>
           </button>
 
           <button 

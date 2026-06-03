@@ -23,7 +23,7 @@ export const Navbar: React.FC = () => {
     { name: 'Dashboard', path: '/dashboard', requiresAuth: true, icon: 'fas fa-th-large' },
     { name: 'Profile', path: '/profile', requiresAuth: true, icon: 'fas fa-user' },
     { name: 'Travels', path: '/travels', requiresAuth: true, icon: 'fas fa-plane' },
-    { name: 'Dating', path: '/dating', requiresAuth: true, icon: 'fas fa-heart' },
+    { name: 'Companion Finder', path: '/dating', requiresAuth: true, icon: 'fas fa-handshake' },
     { name: 'Games', path: '/games-challenges', requiresAuth: true, icon: 'fas fa-gamepad' },
     { name: 'Wellness', path: '/wellness', requiresAuth: true, icon: 'fas fa-spa' },
     { name: 'Marketplace', path: '/marketplace', requiresAuth: true, icon: 'fas fa-store' },
