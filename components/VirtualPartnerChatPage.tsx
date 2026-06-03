@@ -85,6 +85,8 @@ export const VirtualPartnerChatPage: React.FC = () => {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isConnectingCall, setIsConnectingCall] = useState(false);
   const [callStatus, setCallStatus] = useState<'connecting' | 'listening' | 'speaking'>('connecting');
+  const [isMuted, setIsMuted] = useState(false);
+  const [isSpeakerOff, setIsSpeakerOff] = useState(false);
   
   // Refs for Audio Handling
   const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -438,8 +440,25 @@ export const VirtualPartnerChatPage: React.FC = () => {
 
             {/* controls */}
             <div className="flex items-center gap-6">
-              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white flex items-center justify-center transition-colors">
-                <i className="fas fa-microphone-slash text-sm"></i>
+              <button
+                onClick={() => {
+                  const newMuted = !isMuted;
+                  setIsMuted(newMuted);
+                  // Mute/unmute actual mic tracks on the stream
+                  if (mediaStreamRef.current) {
+                    mediaStreamRef.current.getAudioTracks().forEach(track => {
+                      track.enabled = !newMuted;
+                    });
+                  }
+                }}
+                title={isMuted ? 'Unmute Microphone' : 'Mute Microphone'}
+                className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all ${
+                  isMuted
+                    ? 'bg-[#DE7A49] border-[#DE7A49] text-white'
+                    : 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+                }`}
+              >
+                <i className={`fas ${isMuted ? 'fa-microphone-slash' : 'fa-microphone'} text-sm`}></i>
               </button>
               <button 
                 onClick={endVoiceCall}
@@ -447,8 +466,16 @@ export const VirtualPartnerChatPage: React.FC = () => {
               >
                 <i className="fas fa-phone-slash text-2xl"></i>
               </button>
-              <button className="w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white flex items-center justify-center transition-colors">
-                <i className="fas fa-volume-up text-sm"></i>
+              <button
+                onClick={() => setIsSpeakerOff(s => !s)}
+                title={isSpeakerOff ? 'Enable Speaker' : 'Disable Speaker'}
+                className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all ${
+                  isSpeakerOff
+                    ? 'bg-white/20 border-white/20 text-white/50'
+                    : 'bg-white/5 hover:bg-white/10 border-white/10 text-white'
+                }`}
+              >
+                <i className={`fas ${isSpeakerOff ? 'fa-volume-mute' : 'fa-volume-up'} text-sm`}></i>
               </button>
             </div>
           </div>

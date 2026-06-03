@@ -40,7 +40,6 @@ export const Sidebar: React.FC = () => {
         <div className="flex flex-col justify-center px-6 h-24 border-b border-[#4C3322]/10 bg-white">
            <Link to="/" className="hover:scale-102 transition-transform duration-300">
              <h1 className="text-3xl font-serif font-black tracking-tight leading-none text-[#4C3322]">Cereen</h1>
-             <span className="text-[9px] tracking-[0.2em] uppercase font-light text-[#4C3322]/50 mt-1 block">magazines</span>
            </Link>
         </div>
 

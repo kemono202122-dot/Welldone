@@ -65,6 +65,7 @@ export const SettingsPage: React.FC = () => {
   const context = useContext(AppContext);
   const navigate = useNavigate();
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (!context) {
     throw new Error('AppContext must be used within an AppContext.Provider');
@@ -431,9 +432,33 @@ export const SettingsPage: React.FC = () => {
                     <div className="pt-8 mt-8 border-t border-red-500/10">
                         <h3 className="text-red-600 font-serif font-bold text-lg mb-2">Danger Zone</h3>
                         <p className="text-xs text-[#4C3322]/60 mb-4">Once you delete your account, all companion connections and profile logs will be permanently erased.</p>
-                        <button className="text-red-600 border border-red-500/20 bg-red-500/5 hover:bg-red-600 hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer">
+                        {!showDeleteConfirm ? (
+                          <button
+                            onClick={() => setShowDeleteConfirm(true)}
+                            className="text-red-600 border border-red-500/20 bg-red-500/5 hover:bg-red-600 hover:text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                          >
                             Delete Sanctuary Account
-                        </button>
+                          </button>
+                        ) : (
+                          <div className="flex items-center gap-3 animate-fade-in">
+                            <span className="text-xs text-red-600 font-bold">Are you sure? This cannot be undone.</span>
+                            <button
+                              onClick={() => {
+                                context.logout();
+                                navigate('/');
+                              }}
+                              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                            >
+                              Yes, Delete
+                            </button>
+                            <button
+                              onClick={() => setShowDeleteConfirm(false)}
+                              className="border border-[#4C3322]/20 text-[#4C3322] px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#4C3322]/5 transition-colors cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -592,7 +617,10 @@ export const SettingsPage: React.FC = () => {
                   <div className="mt-8 pt-8 border-t border-[#4C3322]/10">
                       <h3 className="font-serif font-bold text-lg text-[#4C3322] mb-2">Blocked Profiles</h3>
                       <p className="text-xs text-[#4C3322]/60 mb-4">Manage profiles restricted from searching or messaging your sanctuary feed.</p>
-                      <button className="text-xs font-bold text-[#4C3322] border border-[#4C3322]/20 px-5 py-2.5 rounded-xl hover:bg-[#4C3322] hover:text-[#FAF7F2] transition-all cursor-pointer">
+                      <button
+                          onClick={() => triggerToast('No blocked profiles in your sanctuary yet.')}
+                          className="text-xs font-bold text-[#4C3322] border border-[#4C3322]/20 px-5 py-2.5 rounded-xl hover:bg-[#4C3322] hover:text-[#FAF7F2] transition-all cursor-pointer"
+                      >
                           Manage Restriction List
                       </button>
                   </div>
@@ -735,15 +763,27 @@ export const SettingsPage: React.FC = () => {
                       </div>
                       
                       <div className="space-y-4 max-w-2xl">
-                          <div className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300">
+                          <div
+                              className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300"
+                              onClick={() => triggerToast('FAQ guide is coming soon. Check back shortly!')}
+                          >
                               <h4 className="font-bold text-[#4C3322] mb-1 text-sm">Frequently Asked Questions</h4>
                               <p className="text-xs text-[#4C3322]/60 font-light">Quick guides regarding companion alignment metrics and retreats.</p>
                           </div>
-                          <div className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300">
+                          <div
+                              className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300"
+                              onClick={() => {
+                                triggerToast('Opening support contact...');
+                                setTimeout(() => window.open('mailto:support@welldone.app', '_blank'), 800);
+                              }}
+                          >
                               <h4 className="font-bold text-[#4C3322] mb-1 text-sm">Direct Sanctuary Advisory Support</h4>
                               <p className="text-xs text-[#4C3322]/60 font-light">Connect with our support team regarding account verification logs.</p>
                           </div>
-                          <div className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300">
+                          <div
+                              className="bg-white hover:bg-[#FAF7F2] p-5 rounded-2xl border border-[#4C3322]/10 cursor-pointer transition-all duration-300"
+                              onClick={() => triggerToast('Thank you! Bug report noted. Our team will review it.')}
+                          >
                               <h4 className="font-bold text-[#4C3322] mb-1 text-sm">Report Interface Glitches</h4>
                               <p className="text-xs text-[#4C3322]/60 font-light">Report issues to help improve sanctuary layout parameters.</p>
                           </div>

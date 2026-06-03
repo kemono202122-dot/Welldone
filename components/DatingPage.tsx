@@ -12,6 +12,19 @@ export const DatingPage: React.FC = () => {
   // Search Mode State
   const [searchMode, setSearchMode] = useState<'standard' | 'cosmic'>('standard');
 
+  // Inline validation / feedback state
+  const [searchError, setSearchError] = useState('');
+  const [cosmicError, setCosmicError] = useState('');
+  const [importMsg, setImportMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Auto-dismiss import message
+  React.useEffect(() => {
+    if (importMsg) {
+      const t = setTimeout(() => setImportMsg(null), 3500);
+      return () => clearTimeout(t);
+    }
+  }, [importMsg]);
+
   // Standard Search State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoal, setSelectedGoal] = useState<RelationshipGoal>('Any');
@@ -83,9 +96,10 @@ export const DatingPage: React.FC = () => {
 
   const handleStandardSearch = async () => {
     if (!searchQuery.trim() && selectedGoal === 'Any' && !selectedVibe) {
-      alert("Please describe your ideal connection or select a filter!");
+      setSearchError('Please describe your ideal connection or select a filter.');
       return;
     }
+    setSearchError('');
     
     // Construct a prompt from the inputs
     let finalDescription = searchQuery;
@@ -101,9 +115,10 @@ export const DatingPage: React.FC = () => {
 
   const handleCosmicSearch = async () => {
     if (!astroBirthDate && !astroName && !astroLuckyNumber) {
-        alert("Please enter at least one criteria (Name, Birthdate, or Lucky Number)!");
+        setCosmicError('Please enter at least one criteria — Name, Birthdate, or Lucky Number.');
         return;
     }
+    setCosmicError('');
     await searchAstrologyPartners({
         nameContains: astroName,
         birthDate: astroBirthDate,
@@ -116,10 +131,10 @@ export const DatingPage: React.FC = () => {
           setAstroName(currentUser.name);
           setAstroBirthDate('1995-06-15'); 
           setAstroLuckyNumber('7');
-          alert("Profile details imported successfully!");
+          setImportMsg({ type: 'success', text: 'Profile details imported successfully!' });
       } else {
-          alert("No connected accounts found. Please connect integrations in settings.");
-          navigate('/settings');
+          setImportMsg({ type: 'error', text: 'No connected accounts found. Please connect integrations in settings.' });
+          setTimeout(() => navigate('/settings'), 2000);
       }
   };
 
@@ -483,7 +498,15 @@ export const DatingPage: React.FC = () => {
                               </button>
                           </div>
                       </div>
-                  ) : (
+                    ) : null}
+                  {/* Standard Search inline error */}
+                  {searchMode === 'standard' && searchError && (
+                      <div className="mt-3 flex items-center gap-2 text-[#DE7A49] text-xs font-bold px-2 animate-fade-in">
+                        <i className="fas fa-exclamation-circle"></i>
+                        <span>{searchError}</span>
+                      </div>
+                  )}
+                  {searchMode !== 'standard' ? (
                       // COSMIC SEARCH BAR
                       <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-[#4C3322]/10 gap-3 lg:gap-0 bg-[#FAF7F2]/40 rounded-[1.5rem] p-2">
                           <div className="flex-grow p-3 relative group">
@@ -533,6 +556,22 @@ export const DatingPage: React.FC = () => {
                                   {loadingDating ? <LoadingSpinner /> : <><i className="fas fa-star text-[10px]"></i> Scan Cosmic Orbit</>}
                               </button>
                           </div>
+                      </div>
+                  ) : null}
+                  {/* Cosmic Search inline error */}
+                  {searchMode === 'cosmic' && cosmicError && (
+                      <div className="mt-3 flex items-center gap-2 text-[#DE7A49] text-xs font-bold px-2 animate-fade-in">
+                        <i className="fas fa-exclamation-circle"></i>
+                        <span>{cosmicError}</span>
+                      </div>
+                  )}
+                  {/* Import feedback toast */}
+                  {importMsg && (
+                      <div className={`mt-3 flex items-center gap-2 text-xs font-bold px-2 animate-fade-in ${
+                        importMsg.type === 'success' ? 'text-[#8BAB70]' : 'text-[#DE7A49]'
+                      }`}>
+                        <i className={`fas ${ importMsg.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle' }`}></i>
+                        <span>{importMsg.text}</span>
                       </div>
                   )}
               </div>

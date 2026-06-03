@@ -308,7 +308,10 @@ export const GamesChallengesPage: React.FC = () => {
                   <p className="text-[#4C3322]/70 text-sm font-light mb-8 max-w-sm">
                     Test your emotional intelligence. Can you decode the hidden feelings and support needs behind daily interactions?
                   </p>
-                  <button className="mt-auto bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow transition-colors">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setActiveGame('empathy'); }}
+                    className="mt-auto bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow transition-colors"
+                  >
                     Play Now
                   </button>
                 </div>
@@ -326,7 +329,10 @@ export const GamesChallengesPage: React.FC = () => {
                   <p className="text-[#4C3322]/70 text-sm font-light mb-8 max-w-sm">
                     Navigate tricky social and companionship scenarios. Your conscious choices determine the health of your connections.
                   </p>
-                  <button className="mt-auto bg-[#4C3322] hover:bg-[#DE7A49] text-[#FAF7F2] px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow transition-colors">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setActiveGame('compass'); }}
+                    className="mt-auto bg-[#4C3322] hover:bg-[#DE7A49] text-[#FAF7F2] px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow transition-colors"
+                  >
                     Play Now
                   </button>
                 </div>
