@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../App';
+import { mockUsers } from '../constants';
 
 export const CereenLandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = React.useState<number | null>(null);
   
+  const context = useContext(AppContext);
+  if (!context) return null;
+  const { currentUser, login, logout } = context;
+
   // Custom Local Auth States
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const [authMode, setAuthMode] = React.useState<'login' | 'register'>('login');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [name, setName] = React.useState('');
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [userName, setUserName] = React.useState('');
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
 
   // Auto-dismiss toast
@@ -31,14 +35,30 @@ export const CereenLandingPage: React.FC = () => {
       setToastMessage('Please enter both email and password.');
       return;
     }
-    setIsLoggedIn(true);
     const namePart = email.split('@')[0];
     const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-    setUserName(formattedName);
+    
+    // Attempt matching a mock user or create one dynamically
+    const matchingUser = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase()) || {
+      id: `user-${Date.now()}`,
+      name: formattedName,
+      email: email,
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80',
+      bio: 'Finding balance, silence, and clarity through quarterly print columns.',
+      interests: ['Mindfulness', 'Meditation'],
+      friends: [],
+      virtualBalance: 100,
+      hasCompletedOnboarding: true,
+      role: 'member',
+      occupation: 'Collector'
+    };
+
+    login(matchingUser);
     setShowAuthModal(false);
     setEmail('');
     setPassword('');
-    setToastMessage(`Welcome back, ${formattedName}!`);
+    setToastMessage(`Welcome back, ${matchingUser.name}!`);
+    navigate('/dashboard');
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -47,18 +67,31 @@ export const CereenLandingPage: React.FC = () => {
       setToastMessage('Please fill in all fields.');
       return;
     }
-    setIsLoggedIn(true);
-    setUserName(name);
+    const newUser = {
+      id: `user-${Date.now()}`,
+      name: name,
+      email: email,
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80',
+      bio: 'Finding balance, silence, and clarity through quarterly print columns.',
+      interests: ['Mindfulness', 'Meditation'],
+      friends: [],
+      virtualBalance: 100,
+      hasCompletedOnboarding: true,
+      role: 'member',
+      occupation: 'Collector'
+    };
+
+    login(newUser);
     setShowAuthModal(false);
     setName('');
     setEmail('');
     setPassword('');
-    setToastMessage(`Account created! Welcome, ${name}!`);
+    setToastMessage(`Welcome, ${name}!`);
+    navigate('/dashboard');
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserName('');
+    logout();
     setToastMessage('Successfully logged out.');
   };
 
@@ -97,11 +130,14 @@ export const CereenLandingPage: React.FC = () => {
 
         {/* Login / Register Buttons */}
         <div className="flex items-center bg-white/60 backdrop-blur-md border border-[#4C3322]/10 rounded-full p-1 shadow-sm">
-          {isLoggedIn ? (
+          {currentUser ? (
             <div className="flex items-center gap-3 px-3">
-              <span className="text-xs md:text-sm font-medium text-[#4C3322]/80">
-                Hi, <span className="font-semibold text-[#8BAB70]">{userName}</span>
-              </span>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="text-xs md:text-sm font-semibold text-[#8BAB70] hover:text-[#4C3322] transition-colors px-2 py-1.5"
+              >
+                Go to Dashboard
+              </button>
               <button 
                 onClick={handleLogout}
                 className="px-4 py-1.5 text-xs md:text-sm font-semibold bg-[#DE7A49]/15 text-[#DE7A49] hover:bg-[#DE7A49] hover:text-white rounded-full transition-all duration-300"

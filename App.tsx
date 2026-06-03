@@ -22,7 +22,7 @@ import {
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { LoginPage } from './components/LoginPage';
-import { DashboardPage } from './components/DashboardPage';
+import { CereenDashboardPage } from './components/CereenDashboardPage';
 import { HomePage } from './components/HomePage';
 import { EditProfilePage } from './components/EditProfilePage';
 import { TravelsPage } from './components/TravelsPage';
@@ -810,7 +810,7 @@ export default function App() {
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/" element={<HomePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard" element={<CereenDashboardPage />} />
                 <Route path="/profile" element={<DetailedProfile />} />
                 <Route path="/users/:userId" element={<DetailedProfile />} />
                 <Route path="/edit-profile" element={<EditProfilePage />} />
