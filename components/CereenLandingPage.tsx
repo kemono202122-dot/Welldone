@@ -108,7 +108,6 @@ export const CereenLandingPage: React.FC = () => {
           </svg>
           <div>
             <h1 className="font-serif text-2xl font-black tracking-tight leading-none">Cereen</h1>
-            <span className="text-[10px] tracking-[0.2em] uppercase font-light text-[#4C3322]/60">magazines</span>
           </div>
         </div>
 
