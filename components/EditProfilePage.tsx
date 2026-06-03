@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../App';
 import { useNavigate } from 'react-router-dom';
@@ -91,175 +90,304 @@ export const EditProfilePage: React.FC = () => {
   if (!currentUser) return null;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8 animate-fade-in pb-20">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#4C3322] font-outfit p-4 md:p-6 lg:p-8 flex flex-col relative overflow-hidden select-none selection:bg-[#8BAB70] selection:text-white pb-20">
       
-      {/* Visual Editor Header */}
-      <div className="relative mb-24">
-          <div className="h-48 md:h-64 w-full rounded-b-[2rem] overflow-hidden relative group">
-              <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button onClick={() => handleImageChange('cover')} className="bg-white/20 backdrop-blur-md border border-white/50 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-white/40 transition-colors">
-                      <i className="fas fa-camera"></i> Change Cover
-                  </button>
-              </div>
-          </div>
+      {/* Background blurs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#8BAB70]/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-[#DE7A49]/5 blur-3xl pointer-events-none" />
+
+      {/* HEADER SECTION */}
+      <header className="max-w-4xl w-full mx-auto flex items-center justify-between py-4 mb-8 border-b border-[#4C3322]/5 z-10">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/profile')}
+            className="w-8 h-8 rounded-full border border-[#4C3322]/10 hover:bg-[#4C3322] hover:text-[#FAF7F2] flex items-center justify-center transition-all cursor-pointer bg-white/20"
+            title="Back to Profile"
+          >
+            <i className="fas fa-arrow-left text-xs"></i>
+          </button>
           
-          <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 md:left-12 md:translate-x-0 group">
-              <div className="relative">
-                  <img src={avatar} alt="Avatar" className="w-32 h-32 rounded-full border-4 border-white dark:border-dark-mode-card-bg shadow-xl object-cover" />
-                  <button onClick={() => handleImageChange('avatar')} className="absolute bottom-0 right-0 bg-brand-teal text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md border-2 border-white hover:scale-110 transition-transform">
-                      <i className="fas fa-pencil-alt text-xs"></i>
-                  </button>
-              </div>
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate('/')}>
+            <svg className="w-8 h-8 text-[#4C3322]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm0 12a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm-6-6a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4zm12 0a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z" />
+            </svg>
+            <div>
+              <h1 className="font-serif text-2xl font-black tracking-tight leading-none">Cereen</h1>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-light text-[#4C3322]/60">magazines</span>
+            </div>
           </div>
-      </div>
+        </div>
 
-      <div className="bg-white dark:bg-dark-mode-card-bg rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 md:p-8">
-        <h2 className="text-3xl font-heading font-bold text-dark-text dark:text-dark-mode-text mb-6">Edit Profile Details</h2>
+        {/* User Badge */}
+        <div className="flex items-center gap-3 bg-white/50 border border-[#4C3322]/10 rounded-full px-4 py-1.5 shadow-sm">
+          <img 
+            src={currentUser.avatar || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80"} 
+            className="w-7 h-7 rounded-full border border-[#4C3322]/10 object-cover shadow-sm"
+            alt="Avatar"
+          />
+          <span className="text-xs font-semibold hidden sm:inline">{currentUser.name.split(' ')[0]}</span>
+        </div>
+      </header>
+
+      {/* CORE FORM CONTAINER */}
+      <div className="max-w-4xl w-full mx-auto z-10 flex flex-col">
         
-        <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Banner Cover Editor */}
+        <div className="relative mb-20">
+            <div className="h-44 md:h-56 w-full rounded-[2.5rem] overflow-hidden relative group border border-[#4C3322]/10">
+                <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button 
+                      onClick={() => handleImageChange('cover')} 
+                      className="bg-white/20 backdrop-blur-md border border-white/50 text-[#FAF7F2] px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-white/40 transition-all cursor-pointer"
+                    >
+                        <i className="fas fa-camera"></i> Change Cover
+                    </button>
+                </div>
+            </div>
             
-            {/* Basic Info */}
-            <section className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">Basic Info</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Name</label>
-                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Occupation</label>
-                        <input type="text" value={occupation} onChange={(e) => setOccupation(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
+            {/* Avatar Circle Editor */}
+            <div className="absolute -bottom-12 left-6 md:left-12 group">
+                <div className="relative">
+                    <img src={avatar} alt="Avatar" className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-[#FAF7F2] shadow-md object-cover" />
+                    <button 
+                      onClick={() => handleImageChange('avatar')} 
+                      className="absolute bottom-0 right-0 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] w-8 h-8 rounded-full flex items-center justify-center shadow border-2 border-[#FAF7F2] transition-colors cursor-pointer"
+                    >
+                        <i className="fas fa-pencil-alt text-xs"></i>
+                    </button>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Bio</label>
-                    <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                </div>
-            </section>
+            </div>
+        </div>
 
-            {/* Location & Culture */}
-            <section className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">Location & Culture</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Country</label>
-                        <select value={country} onChange={(e) => { setCountry(e.target.value); setCity(''); }} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none">
-                            <option value="">Select Country</option>
-                            {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">City</label>
-                        {availableCities ? (
-                            <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" disabled={!country}>
-                                <option value="">Select City</option>
-                                {availableCities.map(c => <option key={c} value={c}>{c}</option>)}
-                                <option value="Other">Other</option>
-                            </select>
-                        ) : (
-                            <input 
-                                type="text" 
+        {/* Input Fields */}
+        <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 md:p-8 shadow-sm">
+          <h2 className="font-serif text-2xl font-black text-[#4C3322] mb-6">Profile Settings</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-8">
+              
+              {/* Basic Info */}
+              <section className="space-y-4">
+                  <h3 className="font-serif text-lg font-black text-[#4C3322] border-b border-[#4C3322]/5 pb-2">Basic Info</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Name</label>
+                          <input 
+                            type="text" 
+                            value={name} 
+                            onChange={(e) => setName(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Occupation</label>
+                          <input 
+                            type="text" 
+                            value={occupation} 
+                            onChange={(e) => setOccupation(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                  </div>
+                  <div>
+                      <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Bio Description</label>
+                      <textarea 
+                        value={bio} 
+                        onChange={(e) => setBio(e.target.value)} 
+                        rows={3} 
+                        className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] resize-none h-24" 
+                      />
+                  </div>
+              </section>
+
+              {/* Location & Culture */}
+              <section className="space-y-4">
+                  <h3 className="font-serif text-lg font-black text-[#4C3322] border-b border-[#4C3322]/5 pb-2">Location & Language</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Country</label>
+                          <select 
+                            value={country} 
+                            onChange={(e) => { setCountry(e.target.value); setCity(''); }} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer"
+                          >
+                              <option value="">Select Country</option>
+                              {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">City</label>
+                          {availableCities ? (
+                              <select 
                                 value={city} 
                                 onChange={(e) => setCity(e.target.value)} 
-                                placeholder={country ? "Enter City Name" : "Select Country First"}
+                                className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer" 
                                 disabled={!country}
-                                className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white disabled:opacity-50 focus:ring-2 focus:ring-brand-teal/50 outline-none" 
-                            />
-                        )}
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Area/District</label>
-                        <input type="text" value={area} onChange={(e) => setArea(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Language (Primary)</label>
-                        <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none">
-                            <option value="">Select Language</option>
-                            {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Preferred Currency</label>
-                        <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none">
-                            <option value="">Select Currency</option>
-                            {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                    </div>
-                </div>
-            </section>
+                              >
+                                  <option value="">Select City</option>
+                                  {availableCities.map(c => <option key={c} value={c}>{c}</option>)}
+                                  <option value="Other">Other</option>
+                              </select>
+                          ) : (
+                              <input 
+                                  type="text" 
+                                  value={city} 
+                                  onChange={(e) => setCity(e.target.value)} 
+                                  placeholder={country ? "Enter City Name" : "Select Country First"}
+                                  disabled={!country}
+                                  className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] disabled:opacity-50" 
+                              />
+                          )}
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Area/District</label>
+                          <input 
+                            type="text" 
+                            value={area} 
+                            onChange={(e) => setArea(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Primary Language</label>
+                          <select 
+                            value={language} 
+                            onChange={(e) => setLanguage(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer"
+                          >
+                              <option value="">Select Language</option>
+                              {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
+                          </select>
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Preferred Currency</label>
+                          <select 
+                            value={currency} 
+                            onChange={(e) => setCurrency(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer"
+                          >
+                              <option value="">Select Currency</option>
+                              {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                      </div>
+                  </div>
+              </section>
 
-            {/* Identity & Views */}
-            <section className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">Identity & Views</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Religion / Spirituality</label>
-                        <select value={religion} onChange={(e) => setReligion(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none">
-                            <option value="">Select Belief System</option>
-                            {RELIGIONS.map(r => <option key={r} value={r}>{r}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Political View</label>
-                        <select value={politicalView} onChange={(e) => setPoliticalView(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none">
-                            <option value="">Select Political View</option>
-                            {POLITICAL_VIEWS.map(p => <option key={p} value={p}>{p}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-dark-text dark:text-dark-mode-text mb-1">Philosophical Outlook</label>
-                        <select value={philosophy} onChange={(e) => setPhilosophy(e.target.value)} className="w-full p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none">
-                            <option value="">Select Philosophy</option>
-                            {PHILOSOPHIES.map(p => <option key={p} value={p}>{p}</option>)}
-                        </select>
-                    </div>
-                </div>
-            </section>
+              {/* Identity & Views */}
+              <section className="space-y-4">
+                  <h3 className="font-serif text-lg font-black text-[#4C3322] border-b border-[#4C3322]/5 pb-2">Outlook & Alignment</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Religion / Belief System</label>
+                          <select 
+                            value={religion} 
+                            onChange={(e) => setReligion(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer"
+                          >
+                              <option value="">Select Belief System</option>
+                              {RELIGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                          </select>
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Political Outlook</label>
+                          <select 
+                            value={politicalView} 
+                            onChange={(e) => setPoliticalView(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer"
+                          >
+                              <option value="">Select Political Outlook</option>
+                              {POLITICAL_VIEWS.map(p => <option key={p} value={p}>{p}</option>)}
+                          </select>
+                      </div>
+                      <div>
+                          <label className="block text-[10px] font-bold text-[#4C3322]/60 uppercase tracking-widest mb-1.5 pl-1">Philosophical Outlook</label>
+                          <select 
+                            value={philosophy} 
+                            onChange={(e) => setPhilosophy(e.target.value)} 
+                            className="w-full p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322] cursor-pointer"
+                          >
+                              <option value="">Select Philosophy</option>
+                              {PHILOSOPHIES.map(p => <option key={p} value={p}>{p}</option>)}
+                          </select>
+                      </div>
+                  </div>
+              </section>
 
-            {/* Social Links */}
-            <section className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-700 pb-2">Social Connections</h3>
-                <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                        <i className="fab fa-facebook text-blue-600 w-8 text-center text-xl"></i>
-                        <input type="text" placeholder="Facebook URL" value={facebook} onChange={(e) => setFacebook(e.target.value)} className="flex-1 p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <i className="fab fa-instagram text-pink-500 w-8 text-center text-xl"></i>
-                        <input type="text" placeholder="Instagram URL" value={instagram} onChange={(e) => setInstagram(e.target.value)} className="flex-1 p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <i className="fab fa-twitter text-blue-400 w-8 text-center text-xl"></i>
-                        <input type="text" placeholder="Twitter URL" value={twitter} onChange={(e) => setTwitter(e.target.value)} className="flex-1 p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <i className="fab fa-linkedin text-blue-700 w-8 text-center text-xl"></i>
-                        <input type="text" placeholder="LinkedIn URL" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} className="flex-1 p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <i className="fab fa-tiktok text-black dark:text-white w-8 text-center text-xl"></i>
-                        <input type="text" placeholder="TikTok URL" value={tiktok} onChange={(e) => setTiktok(e.target.value)} className="flex-1 p-3 border rounded-xl dark:bg-dark-mode-input-bg dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-brand-teal/50 outline-none" />
-                    </div>
-                </div>
-            </section>
+              {/* Social Links */}
+              <section className="space-y-4">
+                  <h3 className="font-serif text-lg font-black text-[#4C3322] border-b border-[#4C3322]/5 pb-2">Social Integrations</h3>
+                  <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                          <div className="w-8 flex items-center justify-center text-[#4C3322]"><i className="fab fa-facebook-f text-lg"></i></div>
+                          <input 
+                            type="text" 
+                            placeholder="Facebook Profile URL" 
+                            value={facebook} 
+                            onChange={(e) => setFacebook(e.target.value)} 
+                            className="flex-1 p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                          <div className="w-8 flex items-center justify-center text-[#DE7A49]"><i className="fab fa-instagram text-lg"></i></div>
+                          <input 
+                            type="text" 
+                            placeholder="Instagram Profile URL" 
+                            value={instagram} 
+                            onChange={(e) => setInstagram(e.target.value)} 
+                            className="flex-1 p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                          <div className="w-8 flex items-center justify-center text-[#8BAB70]"><i className="fab fa-twitter text-lg"></i></div>
+                          <input 
+                            type="text" 
+                            placeholder="Twitter Profile URL" 
+                            value={twitter} 
+                            onChange={(e) => setTwitter(e.target.value)} 
+                            className="flex-1 p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                          <div className="w-8 flex items-center justify-center text-[#4C3322]"><i className="fab fa-linkedin-in text-lg"></i></div>
+                          <input 
+                            type="text" 
+                            placeholder="LinkedIn Profile URL" 
+                            value={linkedin} 
+                            onChange={(e) => setLinkedin(e.target.value)} 
+                            className="flex-1 p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                          <div className="w-8 flex items-center justify-center text-[#DE7A49]"><i className="fab fa-tiktok text-lg"></i></div>
+                          <input 
+                            type="text" 
+                            placeholder="TikTok Profile URL" 
+                            value={tiktok} 
+                            onChange={(e) => setTiktok(e.target.value)} 
+                            className="flex-1 p-3.5 border border-[#4C3322]/10 bg-[#FAF7F2]/40 rounded-2xl text-sm focus:outline-none focus:border-[#8BAB70] text-[#4C3322]" 
+                          />
+                      </div>
+                  </div>
+              </section>
 
-            <div className="flex justify-end gap-4 pt-6 border-t border-gray-100 dark:border-gray-700">
-                <button
-                    type="button"
-                    onClick={() => navigate('/profile')}
-                    className="px-8 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                >
-                    Cancel
-                </button>
-                <button
-                    type="submit"
-                    className="px-8 py-3 bg-primary-teal text-white rounded-xl font-bold hover:bg-secondary-mint transition-colors shadow-lg"
-                >
-                    Save Profile
-                </button>
-            </div>
-        </form>
+              {/* Form Action Buttons */}
+              <div className="flex justify-end gap-3 pt-6 border-t border-[#4C3322]/5">
+                  <button
+                      type="button"
+                      onClick={() => navigate('/profile')}
+                      className="px-6 py-3.5 bg-white border border-[#4C3322]/15 text-[#4C3322] rounded-2xl font-bold text-xs uppercase tracking-wider transition-colors hover:bg-[#4C3322]/5 cursor-pointer shadow-sm"
+                  >
+                      Cancel
+                  </button>
+                  <button
+                      type="submit"
+                      className="px-8 py-3.5 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] rounded-2xl font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer shadow-sm"
+                  >
+                      Save Profile
+                  </button>
+              </div>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { User, Post, Comment } from '../types';
 
@@ -80,28 +79,28 @@ export const StoryBoard: React.FC<StoryBoardProps> = ({
     setVisibleComments(prev => ({ ...prev, [postId]: !prev[postId] }));
   };
 
-  const getAuthor = (userId: string) => users.find(u => u.id === userId) || { name: 'Unknown', avatar: 'https://via.placeholder.com/150' } as User;
+  const getAuthor = (userId: string) => users.find(u => u.id === userId) || { name: 'Cereen Reader', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80', occupation: 'Practitioner' } as User;
 
   // Highlight hashtags and mentions in text
   const renderRichText = (text: string) => {
       const parts = text.split(/(\s+)/);
       return parts.map((part, i) => {
-          if (part.startsWith('#')) return <span key={i} className="text-primary-teal font-bold">{part}</span>;
-          if (part.startsWith('@')) return <span key={i} className="text-accent-sky font-bold cursor-pointer">{part}</span>;
+          if (part.startsWith('#')) return <span key={i} className="text-[#8BAB70] font-bold">{part}</span>;
+          if (part.startsWith('@')) return <span key={i} className="text-[#DE7A49] font-bold cursor-pointer">{part}</span>;
           return part;
       });
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* 1. Create Post Box */}
       {showCreateBox && currentUser && (
-        <div className="bg-white dark:bg-dark-mode-card-bg rounded-3xl p-6 shadow-md border border-gray-100 dark:border-gray-700">
+        <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 shadow-sm">
           <div className="flex gap-4">
             <img 
                 src={currentUser.avatar} 
                 alt={currentUser.name} 
-                className="w-12 h-12 rounded-full object-cover border-2 border-primary-teal"
+                className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow"
             />
             <div className="flex-grow">
                 <form onSubmit={handleCreatePost}>
@@ -109,14 +108,19 @@ export const StoryBoard: React.FC<StoryBoardProps> = ({
                         value={newPostContent}
                         onChange={(e) => setNewPostContent(e.target.value)}
                         placeholder={`Share your story, ${currentUser.name.split(' ')[0]}...`}
-                        className="w-full bg-gray-50 dark:bg-dark-mode-input-bg border-none rounded-2xl p-4 focus:ring-2 focus:ring-primary-teal/20 outline-none text-gray-800 dark:text-white resize-none h-24 mb-3 transition-all"
+                        className="w-full bg-[#FAF7F2]/40 border border-[#4C3322]/10 rounded-2xl p-4 focus:outline-none focus:border-[#8BAB70] text-[#4C3322] font-light text-sm placeholder-[#4C3322]/40 resize-none h-24 mb-3 transition-colors"
                     ></textarea>
                     
                     {isTagging && (
-                        <div className="flex flex-wrap gap-2 mb-3 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
-                            <span className="text-xs text-gray-500 w-full mb-1">Tag a friend:</span>
+                        <div className="flex flex-wrap gap-1.5 mb-3 bg-[#FAF7F2] border border-[#4C3322]/10 p-2.5 rounded-2xl animate-fade-in">
+                            <span className="text-[10px] font-bold text-[#4C3322]/40 uppercase tracking-widest w-full mb-1">Tag a companion:</span>
                             {users.filter(u => u.id !== currentUser.id).slice(0,5).map(u => (
-                                <button key={u.id} type="button" onClick={() => insertTag(u.name.replace(' ',''))} className="text-xs bg-white dark:bg-gray-700 px-2 py-1 rounded shadow-sm hover:bg-primary-teal hover:text-white">
+                                <button 
+                                  key={u.id} 
+                                  type="button" 
+                                  onClick={() => insertTag(u.name.replace(' ',''))} 
+                                  className="text-[9px] font-bold uppercase tracking-wider bg-white border border-[#4C3322]/10 px-2 py-1 rounded-full hover:bg-[#8BAB70] hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                                >
                                     @{u.name}
                                 </button>
                             ))}
@@ -132,33 +136,45 @@ export const StoryBoard: React.FC<StoryBoardProps> = ({
                                     placeholder="Add Location"
                                     value={location}
                                     onChange={e => setLocation(e.target.value)}
-                                    className="flex-1 p-2 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border-none text-sm dark:text-white"
+                                    className="flex-1 p-3 border border-[#4C3322]/10 rounded-2xl bg-[#FAF7F2]/40 text-xs focus:outline-none focus:border-[#8BAB70]"
                                 />
                                 <input 
                                     type="text" 
                                     placeholder="Feeling..."
                                     value={feeling}
                                     onChange={e => setFeeling(e.target.value)}
-                                    className="flex-1 p-2 rounded-xl bg-gray-50 dark:bg-dark-mode-input-bg border-none text-sm dark:text-white"
+                                    className="flex-1 p-3 border border-[#4C3322]/10 rounded-2xl bg-[#FAF7F2]/40 text-xs focus:outline-none focus:border-[#8BAB70]"
                                 />
                             </div>
                             {mediaUrl && (
-                                <div className="relative rounded-xl overflow-hidden bg-black/5 dark:bg-black/20 mt-2">
+                                <div className="relative rounded-[2rem] overflow-hidden border border-[#4C3322]/10 mt-2">
                                     {mediaType === 'image' ? <img src={mediaUrl} alt="Preview" className="w-full h-48 object-cover" /> : <video src={mediaUrl} className="w-full h-48 object-cover" controls />}
-                                    <button type="button" onClick={() => { setMediaUrl(''); setMediaType(null); }} className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center hover:bg-red-500"><i className="fas fa-times text-xs"></i></button>
+                                    <button 
+                                      type="button" 
+                                      onClick={() => { setMediaUrl(''); setMediaType(null); }} 
+                                      className="absolute top-2 right-2 bg-black/50 text-[#FAF7F2] rounded-full p-1 w-6 h-6 flex items-center justify-center hover:bg-[#DE7A49] transition-colors cursor-pointer"
+                                    >
+                                      <i className="fas fa-times text-xs"></i>
+                                    </button>
                                 </div>
                             )}
                         </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-700">
-                        <div className="flex gap-4 text-gray-500 dark:text-gray-400">
-                            <button type="button" onClick={() => handleMediaUpload('image')} className="hover:text-primary-teal transition-colors"><i className="fas fa-image text-lg"></i></button>
-                            <button type="button" onClick={() => handleMediaUpload('video')} className="hover:text-secondary-mint transition-colors"><i className="fas fa-video text-lg"></i></button>
-                            <button type="button" onClick={() => setShowExtras(!showExtras)} className="hover:text-yellow-500 transition-colors"><i className="fas fa-map-marker-alt text-lg"></i></button>
-                            <button type="button" onClick={() => setIsTagging(!isTagging)} className="hover:text-accent-sky transition-colors"><i className="fas fa-user-tag text-lg"></i></button>
+                    <div className="flex justify-between items-center pt-3 border-t border-[#4C3322]/5">
+                        <div className="flex gap-4 text-[#4C3322]/50">
+                            <button type="button" onClick={() => handleMediaUpload('image')} className="hover:text-[#8BAB70] transition-colors cursor-pointer" title="Add Image"><i className="fas fa-image text-sm"></i></button>
+                            <button type="button" onClick={() => handleMediaUpload('video')} className="hover:text-[#DE7A49] transition-colors cursor-pointer" title="Add Video"><i className="fas fa-video text-sm"></i></button>
+                            <button type="button" onClick={() => setShowExtras(!showExtras)} className="hover:text-[#DE7A49] transition-colors cursor-pointer" title="Set Location / Feeling"><i className="fas fa-map-marker-alt text-sm"></i></button>
+                            <button type="button" onClick={() => setIsTagging(!isTagging)} className="hover:text-[#8BAB70] transition-colors cursor-pointer" title="Tag Friend"><i className="fas fa-user-tag text-sm"></i></button>
                         </div>
-                        <button type="submit" disabled={!newPostContent.trim()} className="bg-primary-teal text-white px-6 py-2 rounded-xl font-bold shadow-md hover:bg-secondary-mint transition-all disabled:opacity-50">Post</button>
+                        <button 
+                          type="submit" 
+                          disabled={!newPostContent.trim()} 
+                          className="bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] px-6 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+                        >
+                          Post
+                        </button>
                     </div>
                 </form>
             </div>
@@ -168,8 +184,8 @@ export const StoryBoard: React.FC<StoryBoardProps> = ({
 
       {/* 2. Feed Stream */}
       {posts.length === 0 ? (
-          <div className="text-center py-16 bg-gray-50 dark:bg-dark-mode-input-bg rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-700">
-              <p className="text-gray-500 dark:text-gray-400 font-bold text-lg">No stories yet.</p>
+          <div className="text-center py-16 bg-white border border-[#4C3322]/10 rounded-[2.5rem] shadow-sm">
+              <p className="text-[#4C3322]/40 italic text-sm font-light">No sanctuary updates yet.</p>
           </div>
       ) : (
           posts.map(post => {
@@ -177,27 +193,29 @@ export const StoryBoard: React.FC<StoryBoardProps> = ({
               const isLiked = currentUser ? post.likes.includes(currentUser.id) : false;
               
               return (
-                  <div key={post.id} className="bg-white dark:bg-dark-mode-card-bg rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700">
-                      <div className="p-5 flex items-center gap-3">
-                          <img src={author.avatar} alt={author.name} className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm" />
+                  <div key={post.id} className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 shadow-sm relative overflow-hidden flex flex-col">
+                      <div className="absolute top-0 left-0 w-full h-16 bg-gradient-to-r from-[#8BAB70]/5 to-[#DE7A49]/5 pointer-events-none"></div>
+                      
+                      <div className="flex items-center gap-3 mb-4 pt-1 z-10">
+                          <img src={author.avatar} alt={author.name} className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm" />
                           <div className="flex-grow">
-                              <h4 className="font-bold text-gray-900 dark:text-white leading-tight text-base">{author.name}</h4>
-                              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                              <h4 className="font-serif text-base font-black text-[#4C3322] leading-tight">{author.name}</h4>
+                              <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-[#4C3322]/40 mt-1">
                                   <span>{new Date(post.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
-                                  {post.location && <span>• <span className="text-primary-teal">{post.location}</span></span>}
-                                  {post.feeling && <span>• <span className="text-yellow-500">feeling {post.feeling}</span></span>}
+                                  {post.location && <span>• <span className="text-[#8BAB70]">{post.location}</span></span>}
+                                  {post.feeling && <span>• <span className="text-[#DE7A49]">feeling {post.feeling}</span></span>}
                               </div>
                           </div>
                       </div>
 
-                      <div className="px-5 pb-4">
-                          <p className="text-gray-800 dark:text-gray-200 text-base whitespace-pre-wrap leading-relaxed mb-4">{renderRichText(post.text)}</p>
+                      <div className="mb-4 pl-1">
+                          <p className="text-[#4C3322]/90 text-sm font-light leading-relaxed whitespace-pre-wrap">{renderRichText(post.text)}</p>
                       </div>
 
-                      {post.image && <img src={post.image} alt="Story" className="w-full max-h-[500px] object-cover" />}
-                      {post.video && <video src={post.video} controls className="w-full max-h-[500px]" />}
+                      {post.image && <img src={post.image} alt="Sanctuary story update" className="w-full max-h-[400px] object-cover rounded-[2rem] border border-[#4C3322]/5 mb-4" />}
+                      {post.video && <video src={post.video} controls className="w-full max-h-[400px] rounded-[2rem] border border-[#4C3322]/5 mb-4" />}
 
-                      <div className="px-5 py-3 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                      <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider text-[#4C3322]/40 pb-2 border-b border-[#4C3322]/5 mb-1.5">
                           <span>{post.likes.length} Likes</span>
                           <div className="flex gap-3">
                               <span>{post.comments.length} Comments</span>
@@ -205,47 +223,61 @@ export const StoryBoard: React.FC<StoryBoardProps> = ({
                           </div>
                       </div>
 
-                      <div className="px-2 py-1 flex items-center justify-between">
-                          <button onClick={() => onLike(post.authorId, post.id)} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-colors ${isLiked ? 'text-brand-pink' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
-                              <i className={`${isLiked ? 'fas' : 'far'} fa-heart text-lg`}></i> Like
+                      {/* Custom rounded icons actions */}
+                      <div className="flex items-center justify-between border-t border-[#4C3322]/5 pt-1.5">
+                          <button 
+                            onClick={() => onLike(post.authorId, post.id)} 
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer ${isLiked ? 'text-[#DE7A49] bg-[#DE7A49]/10' : 'text-[#4C3322]/50 hover:text-[#4C3322] hover:bg-[#FAF7F2]'}`}
+                          >
+                              <i className={`${isLiked ? 'fas' : 'far'} fa-heart text-sm`}></i> Like
                           </button>
-                          <button onClick={() => toggleComments(post.id)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                              <i className="far fa-comment-alt text-lg"></i> Comment
+                          <button 
+                            onClick={() => toggleComments(post.id)} 
+                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider text-[#4C3322]/50 hover:text-[#4C3322] hover:bg-[#FAF7F2] transition-colors cursor-pointer"
+                          >
+                              <i className="far fa-comment-alt text-sm"></i> Comment
                           </button>
-                          <button onClick={() => onShare(post.authorId, post.id)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                              <i className="fas fa-share text-lg"></i> Share
+                          <button 
+                            onClick={() => onShare(post.authorId, post.id)} 
+                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-xs uppercase tracking-wider text-[#4C3322]/50 hover:text-[#4C3322] hover:bg-[#FAF7F2] transition-colors cursor-pointer"
+                          >
+                              <i className="fas fa-share text-sm"></i> Share
                           </button>
                       </div>
 
                       {visibleComments[post.id] && (
-                          <div className="bg-gray-50 dark:bg-dark-mode-input-bg p-5 border-t border-gray-100 dark:border-gray-700">
+                          <div className="bg-[#FAF7F2]/50 border-t border-[#4C3322]/5 mt-4 pt-4 rounded-[2rem] p-4 flex flex-col space-y-4">
                               {post.comments.length > 0 && (
-                                  <div className="space-y-4 mb-5 max-h-60 overflow-y-auto">
+                                  <div className="space-y-3.5 max-h-56 overflow-y-auto pr-1">
                                       {post.comments.map(comment => (
-                                          <div key={comment.id} className="flex gap-3">
-                                              <img src={comment.userAvatar} className="w-8 h-8 rounded-full object-cover flex-shrink-0" alt="" />
-                                              <div className="bg-white dark:bg-dark-mode-card-bg px-3 py-2 rounded-2xl shadow-sm flex-grow">
-                                                  <p className="text-xs font-bold text-gray-900 dark:text-white mb-0.5">{comment.userName}</p>
-                                                  <p className="text-sm text-gray-700 dark:text-gray-300">{comment.text}</p>
+                                          <div key={comment.id} className="flex gap-2.5 items-start">
+                                              <img src={comment.userAvatar} className="w-7 h-7 rounded-full object-cover flex-shrink-0" alt="" />
+                                              <div className="bg-white border border-[#4C3322]/10 px-3.5 py-2.5 rounded-2xl shadow-sm flex-grow">
+                                                  <p className="text-[10px] font-bold text-[#4C3322] mb-0.5">{comment.userName}</p>
+                                                  <p className="text-xs text-[#4C3322]/70 font-light leading-relaxed">{comment.text}</p>
                                               </div>
                                           </div>
                                       ))}
                                   </div>
                               )}
                               
-                              <div className="flex gap-2 items-center">
-                                  <img src={currentUser?.avatar} className="w-8 h-8 rounded-full object-cover" alt="" />
-                                  <div className="flex-grow relative">
+                              <div className="flex gap-2.5 items-center">
+                                  <img src={currentUser?.avatar} className="w-7 h-7 rounded-full object-cover flex-shrink-0" alt="" />
+                                  <div className="flex-grow relative flex items-center">
                                       <input 
                                         type="text" 
                                         value={commentInputs[post.id] || ''}
                                         onChange={(e) => handleCommentChange(post.id, e.target.value)}
                                         placeholder="Write a comment..." 
-                                        className="w-full bg-white dark:bg-dark-mode-card-bg rounded-full pl-4 pr-12 py-2.5 text-sm border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-teal/20 dark:text-white"
+                                        className="w-full bg-white border border-[#4C3322]/10 rounded-full pl-4 pr-12 py-2.5 text-xs text-[#4C3322] focus:outline-none focus:border-[#8BAB70]"
                                         onKeyDown={(e) => e.key === 'Enter' && submitComment(post)}
                                       />
-                                      <button onClick={() => submitComment(post)} className="absolute right-1 top-1 w-8 h-8 rounded-full bg-primary-teal text-white flex items-center justify-center hover:bg-secondary-mint transition-colors shadow-sm" disabled={!commentInputs[post.id]?.trim()}>
-                                          <i className="fas fa-paper-plane text-xs"></i>
+                                      <button 
+                                        onClick={() => submitComment(post)} 
+                                        className="absolute right-1 w-8 h-8 rounded-full bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] flex items-center justify-center transition-colors shadow cursor-pointer" 
+                                        disabled={!commentInputs[post.id]?.trim()}
+                                      >
+                                          <i className="fas fa-paper-plane text-[10px]"></i>
                                       </button>
                                   </div>
                               </div>
