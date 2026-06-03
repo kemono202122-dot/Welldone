@@ -419,6 +419,14 @@ export const CereenDashboardPage: React.FC = () => {
             <i className="fas fa-robot text-xs"></i>
             <span className="whitespace-nowrap font-bold">Companion Guide</span>
           </button>
+
+          <button 
+            onClick={() => navigate('/marketplace')}
+            className="w-full text-left px-4 py-3 rounded-full flex items-center gap-3 text-sm font-semibold transition-all duration-300 hover:bg-[#8BAB70]/15 hover:text-[#8BAB70] text-[#4C3322]"
+          >
+            <i className="fas fa-store text-xs"></i>
+            <span className="whitespace-nowrap font-bold">Marketplace Catalog</span>
+          </button>
         </nav>
 
         {/* WORKSPACE AREA */}

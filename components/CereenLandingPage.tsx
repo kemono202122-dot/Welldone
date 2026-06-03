@@ -144,6 +144,12 @@ export const CereenLandingPage: React.FC = () => {
           >
             Companion Guide <sup className="text-[9px] text-[#8BAB70] font-bold uppercase ml-0.5">Live</sup>
           </span>
+          <span 
+            onClick={() => navigate('/marketplace')}
+            className="hover:text-[#8BAB70] transition-colors flex items-center gap-1 cursor-pointer select-none"
+          >
+            Marketplace Catalog <sup className="text-[9px] text-[#8BAB70] font-bold uppercase ml-0.5">Live</sup>
+          </span>
         </nav>
 
         {/* Login / Register Buttons */}
