@@ -132,6 +132,12 @@ export const CereenLandingPage: React.FC = () => {
           >
             Sanctuary Circle <sup className="text-[9px] text-[#8BAB70] font-bold uppercase ml-0.5">Live</sup>
           </span>
+          <span 
+            onClick={() => navigate('/wellness')}
+            className="hover:text-[#8BAB70] transition-colors flex items-center gap-1 cursor-pointer select-none"
+          >
+            Wellness Sanctuary <sup className="text-[9px] text-[#8BAB70] font-bold uppercase ml-0.5">Live</sup>
+          </span>
         </nav>
 
         {/* Login / Register Buttons */}
