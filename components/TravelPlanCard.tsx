@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TravelPlan } from '../types';
 
@@ -10,59 +9,62 @@ interface TravelPlanCardProps {
 
 export const TravelPlanCard: React.FC<TravelPlanCardProps> = ({ travelPlan, onViewDetails, onShare }) => {
   return (
-    <div className="bg-white dark:bg-dark-mode-card-bg rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full group">
-      {/* Cache-busting comment: 2024-07-29T11:35:00Z */}
-      <div className="relative h-48 overflow-hidden">
+    <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow transition-all duration-300 flex flex-col h-full group">
+      <div className="relative h-48 overflow-hidden border-b border-[#4C3322]/5 select-none">
         <img
-            src={travelPlan.image}
-            alt={travelPlan.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          src={travelPlan.image}
+          alt={travelPlan.name}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
       </div>
       
-      <div className="p-5 flex flex-col flex-grow">
-        <h3 className="text-xl font-heading font-extrabold text-dark-text dark:text-dark-mode-text mb-2 leading-tight">{travelPlan.name}</h3>
-        <p className="text-text-base dark:text-dark-mode-text-base text-sm mb-4 line-clamp-3 leading-relaxed">{travelPlan.description}</p>
+      <div className="p-6 flex flex-col flex-grow">
+        <h3 className="font-serif text-lg font-black text-[#4C3322] mb-2 leading-tight select-none">
+          {travelPlan.name}
+        </h3>
+        <p className="text-xs font-light text-[#4C3322]/70 leading-relaxed mb-4 line-clamp-3">
+          {travelPlan.description}
+        </p>
         
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-1.5 mb-4 select-none">
           {travelPlan.wellnessFocus.map((focus, index) => (
             <span
               key={index}
-              className="bg-secondary-mint dark:bg-secondary-mint-dark text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full"
+              className="bg-[#8BAB70]/10 border border-[#8BAB70]/20 text-[#8BAB70] text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full"
             >
               {focus}
             </span>
           ))}
         </div>
 
-        <div className="flex justify-between items-center text-sm text-gray-600 dark:text-dark-mode-text-base mb-4 mt-auto font-medium">
-          <span className="flex items-center">
-            <i className="fas fa-map-marker-alt mr-1 text-primary-teal dark:text-primary-teal-dark"></i>
+        <div className="flex justify-between items-center text-[10px] font-bold text-[#4C3322]/50 mb-6 mt-auto border-t border-[#4C3322]/5 pt-4 select-none">
+          <span className="flex items-center gap-1.5">
+            <i className="fas fa-map-marker-alt text-[#8BAB70]"></i>
             {travelPlan.location}
           </span>
-          <span className="flex items-center">
-            <i className="fas fa-calendar-alt mr-1 text-primary-teal dark:text-primary-teal-dark"></i>
+          <span className="flex items-center gap-1.5">
+            <i className="fas fa-calendar-alt text-[#8BAB70]"></i>
             {travelPlan.dates}
           </span>
         </div>
 
-        <div className="flex gap-2">
-            <button
+        <div className="flex gap-2.5 select-none">
+          <button
             onClick={() => onViewDetails(travelPlan.id)}
-            className="flex-grow bg-primary-teal dark:bg-primary-teal-dark text-white px-4 py-2.5 rounded-xl shadow hover:bg-secondary-mint dark:hover:bg-secondary-mint-dark transition-colors font-bold text-sm"
-            >
+            className="flex-grow bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow transition-colors cursor-pointer"
+          >
             View Details
+          </button>
+          {onShare && (
+            <button
+              onClick={() => onShare(travelPlan)}
+              className="bg-white border border-[#4C3322]/15 hover:bg-[#4C3322]/5 text-[#4C3322] px-4 py-3 rounded-2xl transition-colors cursor-pointer text-xs"
+              aria-label="Share Travel Plan"
+            >
+              <i className="fas fa-share-alt"></i>
             </button>
-            {onShare && (
-                <button
-                onClick={() => onShare(travelPlan)}
-                className="bg-accent-sky dark:bg-accent-sky-dark text-white px-4 py-2.5 rounded-xl shadow hover:bg-blue-600 dark:hover:bg-accent-sky transition-colors font-bold"
-                aria-label="Share Travel Plan"
-                >
-                <i className="fas fa-share-alt"></i>
-                </button>
-            )}
+          )}
         </div>
       </div>
     </div>

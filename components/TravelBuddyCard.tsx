@@ -1,4 +1,3 @@
-
 import React, { useContext } from 'react';
 import { SuggestedTravelBuddy, User, FriendRequest } from '../types';
 import { AppContext } from '../App';
@@ -51,75 +50,75 @@ export const TravelBuddyCard: React.FC<TravelBuddyCardProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-dark-mode-card-bg rounded-[2rem] shadow-md border border-gray-100 dark:border-gray-700 p-6 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 group h-full">
+    <div className="bg-white border border-[#4C3322]/10 rounded-[2.5rem] p-6 shadow-sm hover:shadow transition-shadow duration-300 flex flex-col items-center text-center group h-full">
       
       {/* Match Score */}
-      <div className="w-full flex justify-end mb-2">
-          <span className="text-[10px] font-black bg-brand-mint/20 text-brand-teal px-2 py-1 rounded-full uppercase tracking-tighter">
-              {buddy.matchScore}% Match
-          </span>
+      <div className="w-full flex justify-end mb-2 select-none">
+        <span className="text-[9px] font-bold bg-[#8BAB70]/10 border border-[#8BAB70]/20 text-[#8BAB70] px-2.5 py-1 rounded-full uppercase tracking-wider">
+          {buddy.matchScore}% Match
+        </span>
       </div>
 
-      {/* Avatar */}
+      {/* Avatar frame */}
       <div className="relative mb-4">
-          <img
-              src={getUserAvatar(buddy.id)}
-              alt={buddy.name}
-              className="w-24 h-24 rounded-full object-cover border-4 border-gray-50 dark:border-gray-800 shadow-sm cursor-pointer hover:scale-105 transition-transform"
-              onClick={() => onViewProfile(buddy.id)}
-          />
-          {isFriends && (
-              <div className="absolute bottom-0 right-0 bg-green-500 text-white w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
-                  <i className="fas fa-check text-[10px]"></i>
-              </div>
-          )}
+        <img
+          src={getUserAvatar(buddy.id)}
+          alt={buddy.name}
+          className="w-24 h-24 rounded-full object-cover border-4 border-[#FAF7F2] shadow-md cursor-pointer hover:scale-105 transition-transform duration-500"
+          onClick={() => onViewProfile(buddy.id)}
+        />
+        {isFriends && (
+          <div className="absolute bottom-0 right-0 bg-[#8BAB70] text-[#FAF7F2] w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-sm text-[10px]">
+            <i className="fas fa-check"></i>
+          </div>
+        )}
       </div>
 
-      {/* Name & Designation (Strictly below name as requested) */}
-      <div className="mb-4 w-full">
-          <h3 
-            className="text-xl font-black text-gray-900 dark:text-white cursor-pointer hover:text-brand-teal transition-colors truncate"
-            onClick={() => onViewProfile(buddy.id)}
-          >
-              {buddy.name}
-          </h3>
-          <p className="text-xs font-bold text-brand-teal uppercase tracking-widest mt-0.5 truncate">
-              {realUser?.occupation || 'Traveler'}
-          </p>
+      {/* Name details */}
+      <div className="mb-4 w-full select-none">
+        <h3 
+          className="font-serif text-lg font-black text-[#4C3322] cursor-pointer hover:text-[#8BAB70] transition-colors truncate"
+          onClick={() => onViewProfile(buddy.id)}
+        >
+          {buddy.name}
+        </h3>
+        <p className="text-[9px] font-bold text-[#8BAB70] uppercase tracking-wider mt-1 truncate">
+          {realUser?.occupation || 'Traveler'}
+        </p>
       </div>
       
-      {/* Bio Snippet / Reason */}
-      <div className="bg-gray-50 dark:bg-dark-mode-input-bg p-4 rounded-2xl w-full mb-6 flex-grow flex items-center justify-center">
-          <p className="text-gray-500 dark:text-gray-400 text-sm italic leading-relaxed line-clamp-3">
-              "{buddy.reason}"
-          </p>
+      {/* Reason details */}
+      <div className="bg-[#FAF7F2]/60 border border-[#4C3322]/5 p-4 rounded-3xl w-full mb-6 flex-grow flex items-center justify-center shadow-inner">
+        <p className="text-[#4C3322]/80 text-xs italic leading-relaxed line-clamp-3 font-light">
+          "{buddy.reason}"
+        </p>
       </div>
 
-      {/* Actions */}
-      <div className="grid grid-cols-2 gap-3 w-full mt-auto">
+      {/* Action buttons */}
+      <div className="grid grid-cols-2 gap-3 w-full mt-auto select-none">
         <button
-            onClick={handleMessage}
-            className="flex items-center justify-center gap-2 bg-brand-blue text-white py-3 rounded-xl font-bold text-sm shadow-md hover:bg-blue-600 transition-colors"
-            title="Send Direct Message"
+          onClick={handleMessage}
+          className="flex items-center justify-center gap-2 bg-[#4C3322] hover:bg-[#8BAB70] text-[#FAF7F2] py-3 rounded-2xl font-bold text-xs uppercase tracking-wider shadow transition-colors cursor-pointer"
+          title="Send Direct Message"
         >
-            <i className="far fa-comment-alt"></i> Message
+          <i className="far fa-comment-alt text-[10px]"></i> Chat
         </button>
 
         {isFriends ? (
-            <button disabled className="bg-green-100 text-green-700 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-1 cursor-default opacity-80">
-                <i className="fas fa-check"></i> Friends
-            </button>
+          <button disabled className="bg-[#8BAB70]/10 border border-[#8BAB70]/20 text-[#8BAB70] py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-default opacity-80">
+            <i className="fas fa-check text-[10px]"></i> Friends
+          </button>
         ) : hasSentRequest ? (
-            <button disabled className="bg-orange-100 text-orange-600 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-1 cursor-default opacity-80">
-                <i className="fas fa-clock"></i> Pending
-            </button>
+          <button disabled className="bg-[#DE7A49]/10 border border-[#DE7A49]/20 text-[#DE7A49] py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-default opacity-80">
+            <i className="fas fa-clock text-[10px]"></i> Pending
+          </button>
         ) : (
-            <button
-                onClick={handleSendRequest}
-                className="bg-brand-teal text-white py-3 rounded-xl font-bold text-sm shadow-md hover:bg-teal-600 transition-colors flex items-center justify-center gap-2"
-            >
-                <i className="fas fa-user-plus"></i> Connect
-            </button>
+          <button
+            onClick={handleSendRequest}
+            className="bg-white border border-[#4C3322]/15 hover:bg-[#4C3322]/5 text-[#4C3322] py-3 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <i className="fas fa-user-plus text-[10px]"></i> Connect
+          </button>
         )}
       </div>
     </div>
