@@ -43,6 +43,8 @@ import { DetailedProfile } from './components/DetailedProfile';
 import { GamesPage } from './components/GamesPage';
 import { ChatWindow } from './components/CommunityChatWindow'; 
 import { OnboardingModal } from './components/OnboardingModal'; 
+import { GroupsPage } from './components/GroupsPage';
+import { EventsPage } from './components/EventsPage';
 
 export const THEME_COLORS: Record<string, { primary: string; secondary: string; accent: string; primaryDark: string; secondaryDark: string; accentDark: string }> = {
   teal: { primary: '#0D9488', secondary: '#99F6E4', accent: '#0EA5E9', primaryDark: '#134E4A', secondaryDark: '#CCFBF1', accentDark: '#0284C7' },
@@ -824,8 +826,8 @@ export default function App() {
                 <Route path="/marketplace" element={<MarketplacePage />} />
                 <Route path="/virtual-partner/create" element={<VirtualPartnerCreationPage />} />
                 <Route path="/virtual-partner/chat" element={<VirtualPartnerChatPage />} />
-                <Route path="/groups" element={<div className="p-8 text-center text-gray-500">Groups feature coming soon.</div>} />
-                <Route path="/events" element={<div className="p-8 text-center text-gray-500">Events feature coming soon.</div>} />
+                <Route path="/groups" element={<GroupsPage />} />
+                <Route path="/events" element={<EventsPage />} />
                 <Route path="/chat" element={<ChatWindow currentUser={currentUser || mockUsers[0]} messages={[]} onSendMessage={()=>{}} allUsers={allUsers} />} />
                 <Route path="/connections" element={<ConnectionsPage />} />
                 <Route path="/friends" element={<ConnectionsPage />} />

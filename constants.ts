@@ -87,11 +87,51 @@ export const mockUsers: User[] = [
 export const mockGroups: Group[] = [
   {
     id: 'group1',
-    name: 'Morning Yoga',
+    name: 'Morning Yoga Circle',
     image: 'https://picsum.photos/seed/yoga_group/400/300',
-    description: 'Start your day with zen.',
-    interests: ['Yoga', 'Meditation'],
-    members: ['user1', 'user3']
+    description: 'Start your day with zen and gentle movement. We meet every morning to flow, breathe, and ground ourselves before the day begins.',
+    interests: ['Yoga', 'Meditation', 'Breathwork'],
+    members: ['user1', 'user3', 'user2']
+  },
+  {
+    id: 'group2',
+    name: 'Mindful Hikers',
+    image: 'https://picsum.photos/seed/hiking_group/400/300',
+    description: 'Explore nature trails while practicing mindfulness. We hike with intention, leaving phones behind and connecting with the earth.',
+    interests: ['Hiking', 'Nature', 'Wellness'],
+    members: ['user2', 'user4', 'user5', 'user1']
+  },
+  {
+    id: 'group3',
+    name: 'Plant-Based Kitchen',
+    image: 'https://picsum.photos/seed/cooking_group/400/300',
+    description: 'Share plant-based recipes, cooking tips, and meal prep strategies. From beginners to seasoned cooks, all are welcome.',
+    interests: ['Cooking', 'Nutrition', 'Sustainability'],
+    members: ['user3', 'user5']
+  },
+  {
+    id: 'group4',
+    name: 'Runner\'s Sanctuary',
+    image: 'https://picsum.photos/seed/running_group/400/300',
+    description: 'Whether you\'re training for a marathon or just starting your running journey, find your pace and your people here.',
+    interests: ['Running', 'Fitness', 'Goals'],
+    members: ['user1', 'user2', 'user4']
+  },
+  {
+    id: 'group5',
+    name: 'Digital Detox Collective',
+    image: 'https://picsum.photos/seed/detox_group/400/300',
+    description: 'Weekly challenges to unplug, be present, and rediscover offline joys. Monthly retreats and accountability check-ins.',
+    interests: ['Mindfulness', 'Wellness', 'Reading'],
+    members: ['user3', 'user5', 'user1', 'user2']
+  },
+  {
+    id: 'group6',
+    name: 'Sound Healers',
+    image: 'https://picsum.photos/seed/sound_group/400/300',
+    description: 'Explore the healing power of sound through gong baths, singing bowls, and vocal toning sessions. Open to all experience levels.',
+    interests: ['Meditation', 'Music', 'Healing'],
+    members: ['user4', 'user5']
   }
 ];
 
@@ -109,12 +149,57 @@ export const mockChallenges: Challenge[] = [
 export const mockEvents: Event[] = [
   {
     id: 'evt1',
-    name: 'Sunset Meditation',
+    name: 'Sunset Meditation & Sound Bath',
     image: 'https://picsum.photos/seed/sunset_med/400/300',
-    description: 'Join us for a guided meditation at sunset.',
-    date: '2024-12-01T18:00:00Z',
-    location: 'City Park',
-    attendees: ['user1', 'user3']
+    description: 'Join us for a guided meditation followed by a 45-minute sound bath at the hilltop. Bring a mat and an open heart.',
+    date: '2026-07-15T18:00:00Z',
+    location: 'Hilltop Sanctuary, City Park',
+    attendees: ['user1', 'user3', 'user2']
+  },
+  {
+    id: 'evt2',
+    name: 'Wellness Retreat Weekend',
+    image: 'https://picsum.photos/seed/retreat_event/400/300',
+    description: 'A full weekend of yoga, workshops, farm-to-table meals, and deep rest. Limited spots available for this immersive experience.',
+    date: '2026-07-22T09:00:00Z',
+    location: 'Green Valley Retreat Center',
+    attendees: ['user2', 'user4']
+  },
+  {
+    id: 'evt3',
+    name: 'Mindful Morning Run',
+    image: 'https://picsum.photos/seed/morning_run/400/300',
+    description: 'A community 5K run through the botanical gardens followed by a breathwork session. All paces welcome.',
+    date: '2026-07-08T06:30:00Z',
+    location: 'Botanical Gardens Entrance',
+    attendees: ['user1', 'user5', 'user3', 'user2']
+  },
+  {
+    id: 'evt4',
+    name: 'Plant-Based Cooking Masterclass',
+    image: 'https://picsum.photos/seed/cooking_event/400/300',
+    description: 'Learn to create nourishing, vibrant meals with Chef Alana. Hands-on cooking, tasting, and recipe booklet included.',
+    date: '2026-07-30T14:00:00Z',
+    location: 'The Sanctuary Kitchen, Downtown',
+    attendees: ['user3', 'user4']
+  },
+  {
+    id: 'evt5',
+    name: 'Yin Yoga & Journaling',
+    image: 'https://picsum.photos/seed/yin_yoga/400/300',
+    description: 'A slow, restorative yoga session paired with guided journaling prompts to release tension and set intentions.',
+    date: '2026-08-05T17:30:00Z',
+    location: 'Lotus Studio, Midtown',
+    attendees: ['user1', 'user2']
+  },
+  {
+    id: 'evt6',
+    name: 'Community Garden Day',
+    image: 'https://picsum.photos/seed/garden_event/400/300',
+    description: 'Get your hands in the earth. Help tend our community wellness garden and take home fresh herbs and produce.',
+    date: '2026-08-12T10:00:00Z',
+    location: 'Cereen Community Garden',
+    attendees: ['user3', 'user5', 'user4']
   }
 ];
 
