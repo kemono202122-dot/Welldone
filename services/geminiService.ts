@@ -393,10 +393,9 @@ export async function generateUserBio(name: string, interests: string[], occupat
 }
 
 export async function chatWithSystemBot(history: { sender: 'user' | 'bot'; text: string }[], newMessage: string): Promise<string> {
-    const ai = getGeminiClient();
-    const conversationContext = history.slice(-10).map(m => `${m.sender === 'user' ? 'User' : 'Assistant'}: ${m.text}`).join('\n');
-    const prompt = `
-You are Cereen's friendly and helpful AI Assistant.
+    const apiKey = process.env.GROQ_API_KEY || "";
+    
+    const systemPrompt = `You are Cereen's friendly and helpful AI Assistant.
 Cereen is a premium wellness, lifestyle, and social connection platform that features:
 - Virtual Companions (AI Partners with custom personalities for chatting and support)
 - Travel Buddy matching and travel planning
@@ -409,20 +408,40 @@ Cereen is a premium wellness, lifestyle, and social connection platform that fea
 - Help the user with any questions they have about Cereen, wellness, mental health, or general support.
 - Keep your answers short, concise, and in simple terms (maximum 2-3 sentences).
 - Sound warm, empathetic, and encouraging. Never be clinical or robotic.
-- If they ask you to perform operations (like bookings or matching), guide them on which page to visit (e.g. "go to the Marketplace page to book services" or "go to the Travels page to find travel buddies").
+- If they ask you to perform operations (like bookings or matching), guide them on which page to visit (e.g. "go to the Marketplace page to book services" or "go to the Travels page to find travel buddies").`;
 
-**CONVERSATION HISTORY:**
-${conversationContext}
-User: ${newMessage}
-
-Assistant:`;
+    // Map history to OpenAI/Groq format
+    const messages = [
+        { role: 'system', content: systemPrompt },
+        ...history.slice(-10).map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text
+        })),
+        { role: 'user', content: newMessage }
+    ];
 
     try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'llama3-8b-8192',
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 150
+            })
         });
-        return response.text?.trim() || "I'm here to help! Feel free to ask anything.";
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Groq API error: ${response.status} - ${errText}`);
+        }
+
+        const data = await response.json();
+        return data.choices?.[0]?.message?.content?.trim() || "I'm here to help! Feel free to ask anything.";
     } catch (e) {
         console.error("System chatbot error:", e);
         return "I'm having a little trouble connecting right now, but I'm still here to support you! Let's try again in a moment.";
