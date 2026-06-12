@@ -428,7 +428,7 @@ Cereen is a premium wellness, lifestyle, and social connection platform that fea
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'llama3-8b-8192',
+                model: 'llama-3.3-70b-versatile',
                 messages: messages,
                 temperature: 0.7,
                 max_tokens: 150
