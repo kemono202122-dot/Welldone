@@ -391,3 +391,41 @@ export async function generateUserBio(name: string, interests: string[], occupat
         return response.text || "";
     } catch (e) { return ""; }
 }
+
+export async function chatWithSystemBot(history: { sender: 'user' | 'bot'; text: string }[], newMessage: string): Promise<string> {
+    const ai = getGeminiClient();
+    const conversationContext = history.slice(-10).map(m => `${m.sender === 'user' ? 'User' : 'Assistant'}: ${m.text}`).join('\n');
+    const prompt = `
+You are Cereen's friendly and helpful AI Assistant.
+Cereen is a premium wellness, lifestyle, and social connection platform that features:
+- Virtual Companions (AI Partners with custom personalities for chatting and support)
+- Travel Buddy matching and travel planning
+- Mindful Dating and cosmic alignment matchmaking
+- Sanctuary Circle (a safe mindfulness space for journals, meditation, and sharing stories)
+- Games & daily wellness challenges
+- Marketplace for booking local wellness services and sessions
+
+**YOUR ROLE & GUIDELINES:**
+- Help the user with any questions they have about Cereen, wellness, mental health, or general support.
+- Keep your answers short, concise, and in simple terms (maximum 2-3 sentences).
+- Sound warm, empathetic, and encouraging. Never be clinical or robotic.
+- If they ask you to perform operations (like bookings or matching), guide them on which page to visit (e.g. "go to the Marketplace page to book services" or "go to the Travels page to find travel buddies").
+
+**CONVERSATION HISTORY:**
+${conversationContext}
+User: ${newMessage}
+
+Assistant:`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
+        return response.text?.trim() || "I'm here to help! Feel free to ask anything.";
+    } catch (e) {
+        console.error("System chatbot error:", e);
+        return "I'm having a little trouble connecting right now, but I'm still here to support you! Let's try again in a moment.";
+    }
+}
+

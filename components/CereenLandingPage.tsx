@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
 import { mockUsers } from '../constants';
+import { HomepageChatbot } from './HomepageChatbot';
 
 export const CereenLandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -1150,6 +1151,8 @@ export const CereenLandingPage: React.FC = () => {
         </div>
       )}
 
+      {/* Floating AI Chatbot */}
+      <HomepageChatbot />
     </div>
   );
 };
